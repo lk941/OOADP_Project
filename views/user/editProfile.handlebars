@@ -1,0 +1,175 @@
+<style>
+    /* General */
+body {
+  background-color: #EE4C7C;
+}
+
+::placeholder {
+  color: #7b7e81;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #7b7e81;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #7b7e81;
+}
+
+textarea:focus, 
+input:focus, 
+input[type]:focus{   
+  box-shadow: 0 0 5px #7b4acb;
+}
+
+textarea {
+  resize: none;
+}
+
+/* Header */
+.header__wrapper {
+  padding: 25px 0; 
+}
+
+.header__wrapper h3 {
+  font-style: italic;
+}
+
+/* Main body */
+.container {
+  max-width: 800px;
+  margin: 50px auto;
+}
+
+.container h2 {
+  text-align: center;
+  margin-bottom: 50px;
+  font-weight: 400;
+}
+
+.form__wrapper {
+  color:#9A1750;
+  background-color: #E3E2DF;
+  padding: 50px 50px 58px;
+  margin: 100px auto 95px;
+}
+
+.form__btns {
+  text-align: center;
+}
+
+.form__btns button {
+  min-width: 95px;
+  margin: 24px 15px 0;
+}
+
+.form-control {
+  color: #9A1750;
+  background-color: #E3E2DF;
+  border-radius: 0;
+}
+
+textarea.form-control {
+  height: 39px;
+}
+
+.form__comments label:not(:first-child){
+  margin-top: 32px;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+/* Footer*/
+footer {
+  color: #E3E2DF;
+  opacity: 0.8;
+}
+
+footer a {
+  color: #5D001E;
+}
+
+footer a:hover {
+  color: #5D001E;
+  text-decoration: underline;
+}
+
+.text-small {
+  font-size: .8rem;
+}
+
+/* Responsive */
+@media (min-width: 576px) { 
+
+  .form__btns button {
+    min-width: 125px;
+    margin: 24px 20px 0;
+  }
+  
+}
+
+#editBttns {
+  color: #9A1750;
+  border-color: #5D001E;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+#editBttns:hover {
+  background-color: #5D001E;
+  color:#E3E2DF;
+  border-color: #EE4C7C;
+}
+
+.editInputField:focus {
+  box-shadow: 0 0 5px #9A1750 !important;
+  background-color: #E3E2DF;
+  color: #9A1750;
+  border-color: #EE4C7C;
+}
+
+</style>
+
+<div class="container form__wrapper"> 
+  
+  <h2>Edit Profile</h2>
+  
+  <form id="myForm" action="/saveEditedProfile/{{user.id}}?_method=PUT" method="post">
+    <input type="hidden" name="_method" value="PUT">
+    <div class="form-row">
+
+      <div class="form-group col-md-6">
+
+        <label for="name">Name</label>
+        <input name="name" type="text" class="form-control editInputField" id="name" placeholder="Name" value="{{user.name}}">
+
+      </div><!-- /form-group -->
+				<div class="col-lg-3">
+					<input type="file" id="posterUpload" name="posterUpload" onchange="posterChange()" accept="image/png,image/jpeg,image/jpg,image/gif">
+					{{!—- Poster image --}}
+					<img id="poster" src="/img/profiledefault.png" alt=""class="border img-thumbnail img-fluid"style="height:auto;width:auto">
+					{{!—- Hidden field to submit URL of poster to the server --}}
+					<input id="photoURL" type="hidden" name="photoURL" value="{{user.photoURL}}">
+					<div class="font-weight-bold text-danger small" id="posterErr" style="display:none"></div>
+				</div>
+
+    </div><!-- /form-row -->
+
+
+    <div class="form__btns">
+
+        <!-- <button id="cancel" class="btn btn-outline-primary">Cancel</button> -->
+        <button onclick="location.href='/showDashboard';" id="editBttns" class="btn btn-outline-primary">Cancel</button>
+
+        <!-- <button id="save" class="btn btn-primary">Save</button> -->
+        <button id="editBttns" class="btn btn-outline-primary" type="submit" class="btn btn-primary">Save</button>
+
+
+    </div><!-- /form__btns -->
+
+  </form>
+
+</div><!-- /container -->  

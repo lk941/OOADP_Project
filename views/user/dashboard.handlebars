@@ -1,0 +1,224 @@
+<link rel="stylesheet" href="css/dashboard.css">
+  <!-- Compiled and minified CSS -->
+<div class="row">
+  <div id="content" class="col s10 offset-s2">
+
+    <div class="row">
+      <div id="content_nav" class="col s12">
+        <div class="nav_header right">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div id="profile" class="col s4">
+          <a class="action" href="/showEditProfile/{{user.id}}" style="position: absolute;">Edit Profile</a>
+          <div class="profile_header">
+            <img src="{{user.photoURL}}" alt="profile_picture" />
+            <h2>{{user.name}}</h2>
+            <p>{{checkUserType user.user_type}}</p>
+            <ul>
+              <li>
+                <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star star-disabled"></i>
+              </li>
+              <li>
+                <p class="stats"><i class="fa fa-fire"></i> 128</p>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="profile_information">
+            <h3>Contact Information</h3>
+            <ul>
+              <li>
+                <h4>Email Address:</h4>
+                <p>{{user.email}}</p>
+              </li>
+              <li>
+                <h4>Phone Number:</h4>
+                <p>+919533480654</p>
+              </li>
+              <li>
+                <h4>Address:</h4>
+                <p>West End 45th Street, San Francisco<br/>90123 California, US</p>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="profile_custom">
+            <h3>Custom Information</h3>
+            <ul>
+              <li>
+                <h4>Facebook:</h4>
+                <p>facebook.com/caludiamills</p>
+              </li>
+              <li>
+                <h4>Personal Phone Number:</h4>
+                <p>+919533480564</p>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="divider"></div>
+          
+          <div class="profile_owner">
+            <img src="https://www2.mmu.ac.uk/media/mmuacuk/content/images/health-professions/student-profile-simone-bianchi-piantini.jpg" width="30px" alt="owner_picture" class="left" />
+            <p>
+              <span>Owner: </span>
+              Mark Hansen
+            </p>
+          </div>
+          
+        </div>
+
+        <div id="profile_content" class="col s8">
+          <nav id="dashboardNav">
+            <ul>
+              <li class="tab">
+                <a href="#timeline">
+                  Timeline
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#Notes" class="active">
+                  Notes
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#events">
+                  Events
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#tasks">
+                  Tasks
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#deals">
+                  Deals
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#webstats">
+                  Web Stats
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#mail">
+                  Mail
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#documents">
+                  Documents
+                </a>
+              </li>
+            </ul>
+            
+            <div class="nav_arrows">
+          <a href="#!"><i class="fa fa-caret-left"></i></a>
+          <a href="#!"><i class="fa fa-caret-right"></i></a>
+        </div>
+            
+          </nav>
+          
+          <div class="profile-content">
+            
+            <div class="row">
+              <div class="content-header">
+                <h3 class="left">Notes (7)</h3>
+                <a href="#!" class="btn btn-flat blue lighten-5 blue-text text-lighten-1 right"><i class="fa fa-caret-down right"></i> Add</a>
+              </div>
+             </div>
+            <div class="row">
+              <ul class="notes">
+                <li class="note">
+                  <img src="http://www4.csudh.edu/Assets/CSUDH-Sites/History/images/Faculty-Profile-Pictures/Faculty%20Male%20Default%20Profile%20Picture.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/> Ut molestiae, aperiam aspernatur. <a href="#!">@Chris</a>
+                    </p>
+                    <span>32 days ago</span>
+                  </div>
+                </li>
+                
+                <li class="note">
+                  <img src="http://orig02.deviantart.net/d20f/f/2012/057/3/c/profile_picture_by_bdeatcher-d4r1sur.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut molestiae, aperiam ipsum dolor sit amet, consectetur adipisicing <a href="#!">#hash</a> <a href="#!">#tag</a> <a href="#!">#url</a>  corrupti voluptates.
+                    </p>
+                    <span>33 days ago</span>
+                  </div>
+                </li>
+                
+                <li class="note">
+                  <img src="http://netdna.walyou.netdna-cdn.com/wp-content/uploads//2010/12/facebook-profile-picture-baby-pic-avatar.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/> Ut molestiae, aperiam aspernatur. <a href="#!">@Chris</a>
+                    </p>
+                    <span>32 days ago</span>
+                  </div>
+                </li>
+                
+                <li class="note">
+                  <img src="https://justinjackson.ca/wp-content/uploads/2008/08/justin-jackson-profile-smile-selfie.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut molestiae, aperiam ipsum dolor sit amet, consectetur adipisicing <a href="#!">#hash</a> <a href="#!">#tag</a> <a href="#!">#url</a>  corrupti voluptates.
+                    </p>
+                    <span>33 days ago</span>
+                  </div>
+                </li>
+                
+                <li class="note">
+                  <img src="http://54.165.17.179/assets/images/people/tiles/karlene-quigley-large.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/> Ut molestiae, aperiam aspernatur. <a href="#!">@Chris</a>
+                    </p>
+                    <span>32 days ago</span>
+                  </div>
+                </li>
+                
+                <li class="note">
+                  <img src="http://www.gantrypark.com/Portals/12/Users/066/14/53314/adam-parker-large.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut molestiae, aperiam ipsum dolor sit amet, consectetur adipisicing <a href="#!">#hash</a> <a href="#!">#tag</a> <a href="#!">#url</a>  corrupti voluptates.
+                    </p>
+                    <span>33 days ago</span>
+                  </div>
+                </li>
+                
+                <li class="note">
+                  <img src="https://thumbs.dreamstime.com/z/beautiful-profile-face-young-woman-clean-fresh-skin-40988715.jpg" alt="note_picture" class="left" />
+                  <div class="note-content">
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.<br/> Ut molestiae, aperiam aspernatur. <a href="#!">@Chris</a>
+                    </p>
+                    <span>32 days ago</span>
+                  </div>
+                </li>
+
+              </ul>  
+            </div>
+            
+          </div>
+          
+        </div>
+    </div><!-- .row profile -->
+
+  </div><!-- .s9 content -->
+    
+</div><!-- .row -->

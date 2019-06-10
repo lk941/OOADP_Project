@@ -1,0 +1,769 @@
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
+<script src='https://unpkg.com/es6-promise@4.2.4/dist/es6-promise.auto.min.js'></script>
+<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+<script src='https://unpkg.com/mapbox@1.0.0-beta7/dist/mapbox-sdk.min.js'></script>
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+
+<!--
+<div class="jumbotron text-center">
+	<div class="container">
+		<h1 class="display-4">{{title}}</h1>
+		<p class="lead">lmao fam u tot</p>
+	</div>
+	<br>
+</div>
+-->
+
+<style>
+ 
+#marker {
+	background-image: url('https://dazedimg-dazedgroup.netdna-ssl.com/786/azure/dazed-prod/1220/4/1224826.jpg');
+	background-size: cover;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+ 
+.mapboxgl-popup {
+	max-width: 200px;
+}
+ 
+.info {
+  position: absolute;
+  top: 100px;
+  left: 10px;
+}
+.info div {
+  background: #fff;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+</style>
+
+<!-- Map -->
+<div id='map' style='width: 100%; height: 100%; position: absolute; top: 0; left: 0;'></div>
+
+<!-- Modal to be populated on click -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 id="marker_title" class=""></h2>
+        <img id="marker_image" class="" src="" />
+        <p id="marker_latlng" class=""></p>
+        <address id="marker_address" class=""></address>
+        <p id="marker_content" class=""></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiY2Vld2FpIiwiYSI6ImNqbng3eDcyZDByeXgzcHBnY2w0cGloM2sifQ.NsvAT34SplBxuUvZsvUSKA';
+var map = new mapboxgl.Map({
+	container: 'map',
+	style: 'mapbox://styles/mapbox/light-v9',
+	center: [103.82764112, 1.369883],
+	zoom: 12.0,
+});
+
+map.addControl(new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+}));
+
+// Add geolocate control to the map.
+map.addControl(new mapboxgl.GeolocateControl({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    trackUserLocation: true
+}));
+
+setTimeout(function() {
+    $(".mapboxgl-ctrl-geolocate").click();
+},2500);
+
+
+      // Create a GeoJSON source with an empty lineString.
+      var geojson = {
+        "type": "FeatureCollection",
+        "features": [{
+          "type": "Feature",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": []
+          }
+        }]
+      };
+
+    var startPoint = [103.81654, 1.3209084];
+	  var endPoint;
+    navigator.geolocation.getCurrentPosition(position => {
+      var userLat = position.coords.latitude;
+      var userLng = position.coords.longitude;
+      endPoint = [userLng, userLat];
+    });
+
+      var framesPerSecond = 20;
+      var initialOpacity = 1
+      var opacity = initialOpacity;
+      var initialRadius = 4;
+      var radius = initialRadius;
+      var maxRadius = 15;
+
+      var speedFactor = 100 // number of frames per longitude degree
+      var animation; // to store and cancel the animation
+
+
+// The 'building' layer in the mapbox-streets vector source contains building-height
+// data from OpenStreetMap.
+map.on('load', function() {
+	// Insert the layer beneath any symbol layer.
+
+	var layers = map.getStyle().layers;
+	
+	var labelLayerId;
+		for (var i = 0; i < layers.length; i++) {
+			if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+				labelLayerId = layers[i].id;
+				break;
+		}
+	}
+	
+	map.addLayer({
+		'id': '3d-buildings',
+		'source': 'composite',
+		'source-layer': 'building',
+		'filter': ['==', 'extrude', 'true'],
+		'type': 'fill-extrusion',
+		'minzoom': 15,
+		'paint': {
+			'fill-extrusion-color': '#aaa',
+		
+			// use an 'interpolate' expression to add a smooth transition effect to the
+			// buildings as the user zooms in
+			'fill-extrusion-height': [
+				"interpolate", ["linear"],
+				["zoom"],
+				15, 0,
+				15.05, ["get", "height"]
+			],
+			'fill-extrusion-base': [
+				"interpolate", ["linear"],
+				["zoom"],
+				15, 0,
+				15.05, ["get", "min_height"]
+			],
+			'fill-extrusion-opacity': .6
+		}
+	}, labelLayerId);
+
+        // Point 1
+        map.addSource('point1', {
+          "type": "geojson",
+          "data": {
+            "type": "Point",
+            "coordinates": [
+              startPoint[0], startPoint[1]
+            ]
+          }
+        });
+        map.addLayer({
+          "id": "circle1",
+          "source": "point1",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-radius-transition": {
+              duration: 0
+            },
+            "circle-opacity-transition": {
+              duration: 0
+            },
+            "circle-color": "#007cbf"
+          }
+        });
+        map.addLayer({
+          "id": "point1",
+          "source": "point1",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-color": "#007cbf"
+          }
+        });
+
+        // Point 2
+        map.addSource('point2', {
+          "type": "geojson",
+          "data": {
+            "type": "Point",
+            "coordinates": [
+              endPoint[0], endPoint[1]
+            ]
+          }
+        });
+        map.addLayer({
+          "id": "circle2",
+          "source": "point2",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-radius-transition": {
+              duration: 0
+            },
+            "circle-opacity-transition": {
+              duration: 0
+            },
+            "circle-color": "#007cbf"
+          }
+        });
+        map.addLayer({
+          "id": "point2",
+          "source": "point2",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-color": "#007cbf"
+          }
+        });
+
+        //Line
+        map.addLayer({
+          'id': 'line-animation',
+          'type': 'line',
+          'source': {
+            'type': 'geojson',
+            'data': geojson
+          },
+          'layout': {
+            'line-cap': 'round',
+            'line-join': 'round'
+          },
+          'paint': {
+            'line-color': '#FA8072',
+            'line-width': 2
+          }
+        });
+
+        var diffX = endPoint[0] - startPoint[0];
+        var diffY = endPoint[1] - startPoint[1];
+
+        var sfX = diffX / speedFactor;
+        var sfY = diffY / speedFactor;
+
+        var i = 0;
+        var j = 0;
+
+        var lineCoordinates = [];
+
+        while (i < diffX || Math.abs(j) < Math.abs(diffY)) {
+          lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
+
+          if (i < diffX) {
+            i += sfX;
+          }
+
+          if (Math.abs(j) < Math.abs(diffY)) {
+            j += sfY;
+          }
+        }
+
+        //console.log(lineCoordinates);
+
+        var animationCounter = 0;
+
+        function animateLine() {
+			//console.log('animate');
+          if (animationCounter < lineCoordinates.length) {
+            geojson.features[0].geometry.coordinates.push(lineCoordinates[animationCounter]);
+            map.getSource('line-animation').setData(geojson);
+
+            requestAnimationFrame(animateLine);
+            animationCounter++;
+          } else {
+            var coord = geojson.features[0].geometry.coordinates;
+            coord.shift();
+
+            if (coord.length > 0) {
+              geojson.features[0].geometry.coordinates = coord;
+              map.getSource('line-animation').setData(geojson);
+
+              //-------------- Point2 Animation End ---------------
+              requestAnimationFrame(animateLine);
+            }
+          }
+        }
+
+			setInterval(() => {
+				var diffX = endPoint[0] - startPoint[0];
+				var diffY = endPoint[1] - startPoint[1];
+
+				var sfX = diffX / speedFactor;
+				var sfY = diffY / speedFactor;
+
+				var i = 0;
+				var j = 0;
+
+				var lineCoordinates = [];
+
+				while (i < diffX || Math.abs(j) < Math.abs(diffY)) {
+				  lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
+
+          if (i < diffX) {
+            i += sfX;
+          }
+
+          if (Math.abs(j) < Math.abs(diffY)) {
+            j += sfY;
+          }
+				}
+
+				//console.log(lineCoordinates);
+
+				var animationCounter = 0;
+
+				function animateLine() {
+					//console.log('animate');
+				if (animationCounter < lineCoordinates.length) {
+					geojson.features[0].geometry.coordinates.push(lineCoordinates[animationCounter]);
+					map.getSource('line-animation').setData(geojson);
+
+					requestAnimationFrame(animateLine);
+					animationCounter++;
+				} else {
+					var coord = geojson.features[0].geometry.coordinates;
+					coord.shift();
+
+					if (coord.length > 0) {
+					geojson.features[0].geometry.coordinates = coord;
+					map.getSource('line-animation').setData(geojson);
+
+					//-------------- Point2 Animation End ---------------
+					requestAnimationFrame(animateLine);
+					}
+				}
+				}
+
+				animateLine();
+			}, 6000);
+
+		//animateLine();
+
+		//setInterval(function(){ animateLine(); }, 3000);
+
+});
+
+// create the popup
+var popup = new mapboxgl.Popup({ offset: 25 })
+	.setText('Placeholder');
+ 
+// create DOM element for the marker
+var el = document.createElement('div');
+el.id = 'marker';
+ 
+// create the marker
+var markers = new mapboxgl.Marker(el)
+	.setLngLat([103.81654, 1.3209084])
+	.setPopup(popup) // sets a popup on this marker
+	.addTo(map);
+
+// ============ WIP Modal Popup ============ \\
+
+/*
+// Add Feature Layer to map
+map.addSource('single-point', {
+  type: 'geojson', // specify the kind of data being added
+  data: {
+    type: 'FeatureCollection',
+    features: [],
+    'data': {geoJson},
+  }
+});
+
+map.addLayer({
+  id: 'point', // the layer's ID
+  source: 'single-point',
+  type: 'circle', // the layer type
+  paint: {
+    'circle-radius': 10,
+    'circle-color': '#007cbf'
+  }
+});
+
+// Initialize geoJson Data
+var geoJson = [{
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [103.22764112, 1.379883]
+  },
+  properties: {
+    title: 'Benton-Houston Ferry',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    image: '/img/profiledefault.png',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': true,
+    'civil': false,
+    'wildlife': true,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.047624, 35.969574]
+  },
+  properties: {
+    title: 'Birdsong Resort, Marina, and Campground',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': false,
+    'civil': false,
+    'wildlife': true,
+    'heritage': true,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-87.97416, 36.08868]
+  },
+  properties: {
+    title: 'Nathan Bedford Forrest State Park',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': true,
+    'civil': true,
+    'wildlife': true,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-87.997892, 36.060605]
+  },
+  properties: {
+    title: 'Nathan Bedford Forrest State Park, Eva Beach Day Use Area',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': false,
+    'civil': false,
+    'wildlife': true,
+    'heritage': true,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.040368, 35.612822]
+  },
+  properties: {
+    title: 'Beech Bend Campground',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': false,
+    'civil': false,
+    'wildlife': false,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.240664, 35.052063]
+  },
+  properties: {
+    title: 'Pickwick Landing State Park',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': false,
+    'civil': true,
+    'wildlife': true,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.193049, 35.070611]
+  },
+  properties: {
+    title: 'Pickwick Landing State Park, Bruton Branch Recreation Area Campground',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': true,
+    'civil': false,
+    'wildlife': true,
+    'heritage': true,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.23479300000001, 35.052419]
+  },
+  properties: {
+    title: 'Pickwick Landing State Park Marina',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': true,
+    'civil': false,
+    'wildlife': false,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.20159, 35.354458]
+  },
+  properties: {
+    title: 'Saltillo Landing and Marina',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': false,
+    'civil': false,
+    'wildlife': true,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}, {
+  type: 'Feature',
+  geometry: {
+    type: 'Point',
+    coordinates: [-88.293174, 35.355906]
+  },
+  properties: {
+    title: 'White Oak Wildlife Management Area',
+    address: '1234 Fake Street, Somewhere, TN 38888',
+    description: 'Some Random text',
+    'water': true,
+    'outdoor': false,
+    'civil': false,
+    'wildlife': true,
+    'heritage': false,
+    'marker-color': '#94a748'
+  }
+}];
+
+markers.setGeoJSON(geoJson);
+*/
+
+// Listener for marker click
+markers.on('click', function(e) {
+  // Force close the popup.
+  e.layer.closePopup();
+
+  var feature = e.layer.feature;
+  var title = feature.properties.title;
+  var content = feature.properties.description;
+  var latlng = feature.geometry.coordinates;
+
+  // Modal Content
+  $("#marker_title").text(title);
+  $("#marker_content").text(content);
+  $("#marker_latlng").text(formatLatLng(latlng));
+
+  $('#exampleModal').modal('show');
+});
+
+// Filter click event
+$('.menu-ui a').on('click', function() {
+  var filter = $(this).data('filter');
+  $(this).addClass('active').siblings().removeClass('active');
+  markers.setFilter(function(f) {
+    return (filter === 'all') ? true : f.properties[filter] === true;
+  });
+  return false;
+});
+
+// Clear Modal Data
+function empty() {
+  // TODO: Clear Modal when Modal is closed for next marker clicked
+}
+
+// Formats Latitude and Longitude for Modal
+function formatLatLng(latlng) {
+  // TODO: Format Latitude and Longitude
+  return latlng;
+}
+
+
+/*
+    map.on('load', function() {
+
+        // Point 1
+        map.addSource('point1', {
+          "type": "geojson",
+          "data": {
+            "type": "Point",
+            "coordinates": [
+              startPoint[0], startPoint[1]
+            ]
+          }
+        });
+        map.addLayer({
+          "id": "circle1",
+          "source": "point1",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-radius-transition": {
+              duration: 0
+            },
+            "circle-opacity-transition": {
+              duration: 0
+            },
+            "circle-color": "#007cbf"
+          }
+        });
+        map.addLayer({
+          "id": "point1",
+          "source": "point1",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-color": "#007cbf"
+          }
+        });
+
+        // Point 2
+        map.addSource('point2', {
+          "type": "geojson",
+          "data": {
+            "type": "Point",
+            "coordinates": [
+              endPoint[0], endPoint[1]
+            ]
+          }
+        });
+        map.addLayer({
+          "id": "circle2",
+          "source": "point2",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-radius-transition": {
+              duration: 0
+            },
+            "circle-opacity-transition": {
+              duration: 0
+            },
+            "circle-color": "#007cbf"
+          }
+        });
+        map.addLayer({
+          "id": "point2",
+          "source": "point2",
+          "type": "circle",
+          "paint": {
+            "circle-radius": initialRadius,
+            "circle-color": "#007cbf"
+          }
+        });
+
+        //Line
+        map.addLayer({
+          'id': 'line-animation',
+          'type': 'line',
+          'source': {
+            'type': 'geojson',
+            'data': geojson
+          },
+          'layout': {
+            'line-cap': 'round',
+            'line-join': 'round'
+          },
+          'paint': {
+            'line-color': 'red',
+            'line-width': 2
+          }
+        });
+
+        var diffX = endPoint[0] - startPoint[0];
+        var diffY = endPoint[1] - startPoint[1];
+
+        var sfX = diffX / speedFactor;
+        var sfY = diffY / speedFactor;
+
+        var i = 0;
+        var j = 0;
+
+        var lineCoordinates = [];
+
+        while (i < diffX || Math.abs(j) < Math.abs(diffY)) {
+          lineCoordinates.push([startPoint[0] + i, startPoint[1] + j]);
+
+          if (i < diffX) {
+            i += sfX;
+          }
+
+          if (Math.abs(j) < Math.abs(diffY)) {
+            j += sfY;
+          }
+        }
+
+        //console.log(lineCoordinates);
+
+        var animationCounter = 0;
+
+        function animateLine() {
+			console.log('animate');
+          if (animationCounter < lineCoordinates.length) {
+            geojson.features[0].geometry.coordinates.push(lineCoordinates[animationCounter]);
+            map.getSource('line-animation').setData(geojson);
+
+            requestAnimationFrame(animateLine);
+            animationCounter++;
+          } else {
+            var coord = geojson.features[0].geometry.coordinates;
+            coord.shift();
+
+            if (coord.length > 0) {
+              geojson.features[0].geometry.coordinates = coord;
+              map.getSource('line-animation').setData(geojson);
+
+              //-------------- Point2 Animation End ---------------
+              requestAnimationFrame(animateLine);
+            }
+          }
+			setInterval(function(){ animateLine(); }, 3000);
+        }
+
+		animateLine();
+
+		//setInterval(function(){ animateLine(); }, 3000);
+
+      });
+*/
+
+</script>

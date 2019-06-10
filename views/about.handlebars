@@ -1,0 +1,15 @@
+
+<div class="container">
+	{{> _msg}}	{{!-- views/partials/_msg.handlebars --}}
+    {{#each error}}
+	    {{> _errors}}{{!-- views/partials/_errors.handlebars --}}
+    {{else}}
+    {{/each}}
+	{{{body}}}
+</div>
+
+
+<h1>About</h1>
+<p>This is a Node/Express app for jotting notes on video collection</p>
+<p>Version: 1.0.0</p>
+<p>This was made by {{author}}</p>
