@@ -15,52 +15,64 @@ html, body {
   line-height: 10px;
   font-size: 80%;
 }
+
 #content #content_nav form {
   width: 40vw;
   height: 30px;
   display: inline-block;
 }
+
 #content #content_nav form .input-field {
   height: 30px;
   margin: 0;
   padding: 0;
 }
+
 #content #content_nav form .input-field label.active {
   font-size: 1.2rem;
   transform: translateY(0);
 }
+
 #content #content_nav form input {
   border: none;
 }
+
 #content #content_nav .nav_header {
   display: inline-block;
   font-size: 100%;
   line-height: 45px;
 }
+
 #content #content_nav .nav_header li {
   display: inline-block;
   margin: 0 10px;
 }
+
 #content #content_nav .nav_header li img {
   border-radius: 50%;
   width: 20px;
   vertical-align: middle;
 }
+
 #content #content_nav .nav_header li a {
   color: #a0aeaf;
 }
+
 #content #content_nav .nav_header li i {
   margin-right: 5px;
 }
+
 #content #subnav {
   height: 50px;
   vertical-align: middle;
 }
+
 #content #subnav .nav_arrows {
   height: 50px;
   width: 20vw;
   margin-top: 15px;
 }
+
 #content #subnav .nav_arrows a {
   position: relative;
   background: white;
@@ -68,30 +80,37 @@ html, body {
   padding: 5px 10px;
   color: #a0aeaf;
 }
+
 #content #subnav .nav_buttons {
   height: 50px;
   margin-top: 10px;
 }
+
 #content #subnav .nav_buttons .btn {
   margin-right: 5px;
   text-transform: initial;
 }
+
 #content #profile {
   background: white;
   box-sizing: border-box;
   padding: 2em;
 }
+
 #content #profile .divider {
   background-color: #f6f7f7;
   height: 2px;
 }
+
 #content #profile .profile_header {
   text-align: center;
 }
+
 #content #profile .profile_header h2 {
   font-size: 150%;
   margin: .5em 0 0 0;
 }
+
 #content #profile .profile_header p {
   color: #9dacad;
   margin: 5px;
@@ -217,7 +236,7 @@ html, body {
   height: auto;
   text-align: left;
   margin: 0;
-  padding: 2em;
+  padding: 1em;
 }
 #content #profile_content .profile-content h3 {
   font-size: 120%;
@@ -378,4 +397,246 @@ html, body {
   margin-left: auto;
   left: auto;
   right: auto;
+}
+
+.product-card {
+  position: relative;
+  width: 80%;
+  height: 360px;
+  margin: 15px auto;
+  font-size: 13px;
+  border: 1px solid #d6e1e5;
+  overflow: hidden;
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s, -webkit-transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s, -webkit-transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card:before {
+  content: '';
+  position: absolute;
+  top: calc(100% - 92px);
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background: #f3f9ff;
+  transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s;
+}
+
+.product-card .product-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.product-card .product-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+}
+
+.product-card .inner {
+  position: absolute;
+  top: calc(100% - 92px);
+  z-index: 3;
+  width: calc(100% - 44px);
+  padding: 0 22px 62px;
+  transition: top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s, color 0.3s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.product-card .inner p {
+  margin: 0;
+  line-height: 15px;
+}
+
+.product-card .tag {
+  position: absolute;
+  top: 0;
+  left: -75px;
+  z-index: 2;
+  width: 50px;
+  height: 50px;
+  font-size: 12px;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.product-card .tag .corner {
+  width: 150px;
+  padding: 25px 0 10px;
+  -webkit-transform-origin: 75px 0px;
+          transform-origin: 75px 0px;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  background: #1f1e21;
+}
+
+.product-card #product_price {
+  display: inline-block;
+  float: right;
+  margin-left: 20px;
+  margin-top: 2.5rem;
+  font-size: 1.15rem;
+}
+
+.product-card .title {
+  display: inline-block;
+  margin: 18px 0 10px;
+  font-size: 14px;
+  width: 68%;
+}
+
+.product-card .title span {
+  font-weight: 300;
+}
+
+.product-card dl {
+  text-transform: uppercase;
+}
+
+.product-card dl dt {
+  position: relative;
+  top: 0;
+  left: -40px;
+  font-size: 10px;
+  margin: 0 0 16px;
+  line-height: 30px;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s, left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.product-card dl dt:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 0%;
+  background: rgba(255, 255, 255, 0.75);
+  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.product-card dl dd {
+  position: relative;
+  top: 0;
+  left: -40px;
+  margin: 0;
+  line-height: 24px;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s, left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.product-card .actions {
+  position: absolute;
+  left: 0;
+  bottom: -62px;
+  width: 100%;
+  height: 62px;
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  color: white;
+  list-style: none;
+  text-transform: uppercase;
+  background: #1f1e21;
+  transition: bottom 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card .actions li {
+  float: left;
+  width: 50%;
+}
+
+.product-card .actions li:first-child a {
+  position: relative;
+}
+
+.product-card .actions li:first-child a:after {
+  content: ' ';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 1px;
+  height: 25px;
+  margin: -12.5px 0 0;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.product-card .actions li a {
+  display: block;
+  line-height: 62px;
+  text-align: center;
+}
+
+.product-card:hover {
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
+  border-bottom-color: #1f1e21;
+  transition: box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.25s, -webkit-transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.25s;
+  transition: box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.25s, -webkit-transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.product-card:hover:before {
+  top: 0;
+  background: rgba(31, 30, 33, 0.8);
+  transition: top 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s;
+}
+
+.product-card:hover .inner {
+  top: 68px;
+  color: white;
+  transition: top 0.6s cubic-bezier(0.455, 0.03, 0.515, 0.955) 0s, color 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s;
+}
+
+.product-card:hover dl dt {
+  opacity: 1;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s, left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s;
+}
+
+.product-card:hover dl dt:after {
+  width: 100%;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s;
+}
+
+.product-card:hover dl dd {
+  opacity: 1;
+  top: 0;
+  left: 0;
+}
+
+.product-card:hover dl dt + dd {
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.7s, left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.7s;
+}
+
+.product-card:hover dl dt + dd + dd {
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s, left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s;
+}
+
+.product-card:hover .actions {
+  bottom: 0;
+  transition: bottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+}
+
+.clear:before, .clear:after {
+  content: '';
+  display: table;
+}
+
+.clear:after {
+  clear: both;
+}
+
+.product_anchor {
+  cursor: pointer;
 }

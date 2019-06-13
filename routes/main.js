@@ -40,15 +40,28 @@ router.get('/showDashboard', isLoggedIn, (req, res) => {
 router.put('/saveEditedProfile/:id', isLoggedIn, (req, res) => {
 	let name = req.body.name;
 	let photoURL = req.body.photoURL;
+	let address = req.body.address;
+	let country = req.body.countrySelect;
+	let unitNo = req.body.unitNo;
+	let postalCode = req.body.postalCode;
+	let phoneNo = req.body.phoneNo;
+	let gender = req.body.gender.toString();
+
 	User.findOne({
         where: {
             id: req.user.id
         }
-    }).then((user) => {			
+    }).then((user) => {		
         user.update({
             // Set variables here to save to the videos table
             name,
-            photoURL,
+			photoURL,
+			address,
+			country,
+			unitNo,
+			postalCode,
+			phoneNo,
+			gender,
         }).then(() => {
             res.redirect('/showDashboard');
 		}).catch(err => console.log(err));
@@ -62,11 +75,25 @@ router.get('/showEditProfile/:id', isLoggedIn, (req, res) => {
             id: req.user.id
         }
     }).then((user) => {
+		checkOptions(user)
         res.render('user/editProfile', {
             user
         });
     }).catch(err => console.log(err));
 })
+
+function checkOptions(user) {
+	let g = user.gender
+	if (g === null) {
+		return ''
+	}
+	if (g.toLowerCase() == 'male') {
+		user.male = 'checked';
+	}
+	if (g.toLowerCase() == 'female') {
+		user.female = 'checked';
+	} 
+}
 
 // Login Form POST => /user/login
 /*
@@ -99,20 +126,6 @@ router.get('/about', (req,res) => {
 		errors:errors,
 	})
 });
-
-// Show Add Video
-router.get('/showAddVideo', (req, res) => {
-	res.render('video/addVideo', {});
-})
-
-
-//Show List Video ? why my video.js aint working tho gotta fix that another time rn im damn sick god dammit my nose is hurting me dammit man why am i still typing here wth ayy lmao fam im high lols
-router.get('/listVideos', (req, res) => {
-	let videoId = req.body.videoId;
-	res.render('video/listVideos', {
-		videoId:videoId,
-	});
-})
 
 // callback route for google to redirect to
 /*

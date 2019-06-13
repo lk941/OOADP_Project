@@ -89,7 +89,7 @@ router.put('/saveEditedVideo/:id', (req, res) => {
     let story = req.body.story.slice(0 , 1999);
     let dateRelease = moment(req.body.dateRelease, 'DD/MM/YYYY');
     let language = req.body.language.toString();
-    let subtitles = req.body.subtitles=== undefined ? '' : req.body.subtitles.toString();
+    let subtitles = req.body.subtitles === undefined ? '' : req.body.subtitles.toString();
     let classification = req.body.classification;
 
     Video.update({
