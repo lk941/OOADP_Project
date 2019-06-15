@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const GoogleStrategy = require('passport-google-oauth20');
 const keys = require('./keys');
 const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 
 // Load user model 
 const User = require('../models/User');
@@ -85,6 +86,41 @@ function localStrategy(passport) {
             });
         })
     )
+
+    passport.use(new TwitterStrategy({
+        consumerKey: keys.twitter.consumerKey,
+        consumerSecret: keys.twitter.consumerSecret,
+        callbackURL: keys.twitter.callbackURL
+    }, function(token, tokenSecret, profile, callback) {
+        process.nextTick(() => {
+            console.log(profile);
+            User.findOne( { where: {user_type: 'Member_twitter' + profile.id} } )
+            .then((user) => {
+                if(!user) {
+                    console.log("======= User not found, new user will be created =======");
+                    console.log(((profile.photos)[0]).value);
+                    console.log(Object.keys(profile.photos)[0]);
+
+                    User.create({ 
+                        name: profile.displayName,
+                        photoURL: ((profile.photos)[0]).value,
+                        user_type: 'Member_twitter' + profile.id,
+                        status: 'ACTIVE',
+                    })
+                    .then((user) => {
+                        console.log('new user created: ' + user);
+                        return callback(null, user);
+                    })
+                } else if (user) {
+                    return callback(null, user);
+                } else {
+                    return callback(null, false, {message: "Unexpected Error has occured"});
+                }
+            });
+        });
+    }));
+    
+    
 }
 
 

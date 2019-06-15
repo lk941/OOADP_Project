@@ -5,6 +5,12 @@ const Product = db.define('product', {
     orgId: {
         type: Sequelize.STRING
     },
+    product_type: {
+        type: Sequelize.STRING
+    },
+    description: {
+        type: Sequelize.STRING(3000)
+    },
     publishDate: {
         type: Sequelize.DATE
     },

@@ -17,20 +17,21 @@
             <img src="{{user.photoURL}}" alt="profile_picture" />
             <h2>{{user.name}}</h2>
             <p>{{checkUserType user.user_type}}</p>
-            <ul style="list-style: none;">
-              <li>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star star-disabled"></i>
-              </li>
-              <li>
-                <p class="stats"><i class="fa fa-fire"></i> 128</p>
-              </li>
-            </ul>
+            {{#ifEqual user.user_type "Organization"}}
+              <ul style="list-style: none;">
+                <li>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star star-disabled"></i>
+                </li>
+                <li>
+                  <p class="stats"><i class="fa fa-fire"></i> 128</p>
+                </li>
+              </ul>
+            {{/ifEqual}}
           </div>
-          
           <div class="divider"></div>
           
           <div class="profile_information">
@@ -49,6 +50,10 @@
                 <p>{{user.phoneNo}}</p>
               </li>
               <li>
+                <h4>Date of birth:</h4>
+                <p>{{user.dob}}</p>
+              </li>
+              <li>
                 <h4>Address:</h4>
                 <p>{{user.address}}, {{user.unitNo}}, {{user.postalCode}}</p>
               </li>
@@ -56,22 +61,22 @@
           </div>
           
           <div class="divider"></div>
-          
-          <div class="profile_custom">
-            <h3 style="margin-top: 5px;">Organization Information</h3>
-            <ul>
-              <li>
-                <h4>Website:</h4>
-                <p>ORGANIZATIONWEBSITE.COM</p>
-              </li>
-              <li>
-                <h4>Website Phone Number:</h4>
-                <p>1800-LMAO-FAM-NOT-DONE-WITH-ORGANIZATION-PROFILE-YET</p>
-              </li>
-            </ul>
-          </div>
+          {{#ifEqual user.user_type "Organization"}}
+            <div class="profile_custom">
+              <h3 style="margin-top: 5px;">Organization Information</h3>
+              <ul>
+                <li>
+                  <h4>Website:</h4>
+                  <p>ORGANIZATIONWEBSITE.COM</p>
+                </li>
+                <li>
+                  <h4>Website Phone Number:</h4>
+                  <p>1800-LMAO-FAM-NOT-DONE-WITH-ORGANIZATION-PROFILE-YET</p>
+                </li>
+              </ul>
+            </div>
+        {{/ifEqual}}
         </div>
-
         <div id="profile_content" class="col s8">
           <nav id="dashboardNav">
             <ul>

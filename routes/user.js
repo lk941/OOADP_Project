@@ -142,6 +142,16 @@ router.get('/facebook/callback', passport.authenticate('facebook', {
     successRedirect: '/',
 }));
 
+router.get('/twitter', passport.authenticate('twitter', {
+    scope: ['name']
+}));
+
+router.get('/twitter/callback', passport.authenticate('twitter', {
+    failureRedirect: '/showLogin',
+    successRedirect: '/',
+}));
+
+
 // Upload poster
 router.post('/upload', isLoggedIn, (req, res) =>{
         // alert("working");

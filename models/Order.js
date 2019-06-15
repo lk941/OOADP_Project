@@ -16,6 +16,15 @@ const Order = db.define('order', {
     },
     product_id: {
         type: Sequelize.STRING
+    },
+    quantity: {
+        type: Sequelize.INTEGER
+    },
+    status: {
+        type: Sequelize.STRING
+    },
+    location: {
+        type: Sequelize.STRING
     }
 });
 

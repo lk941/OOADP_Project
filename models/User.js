@@ -48,6 +48,18 @@ const User = db.define('user', {
     order_history: {
         type: Sequelize.STRING
     },
+    org_id: {
+        type: Sequelize.STRING
+    },
+    org_name: {
+        type: Sequelize.STRING
+    },
+    org_rating: {
+        type: Sequelize.STRING
+    },
+    products: {
+        type: Sequelize.STRING
+    },
 });
 
 module.exports = User;

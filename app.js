@@ -44,7 +44,8 @@ const videoRoute = require('./routes/video');
 // Copy and paste this statement only!!
 const {formatDate} = require('./helpers/hbs');
 const {radioCheck} = require('./helpers/hbs');
-const {checkUserType} = require('./helpers/hbs')
+const {checkUserType} = require('./helpers/hbs');
+const {ifEqual} = require('./helpers/hbs');
 
 /*
  * Creates an Express server - Express is a web application framework for creating web applications
@@ -68,6 +69,7 @@ app.engine('handlebars', exphbs({
 		formatDate:formatDate,	
 		radioCheck:radioCheck,
 		checkUserType,
+		ifEqual,
 	},
 
 	defaultLayout: 'main' // Specify default template views/layout/main.handlebar 

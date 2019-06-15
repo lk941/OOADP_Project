@@ -10,4 +10,9 @@ module.exports = {
         clientSecret: '6e92c97f4799e4011c071121527067b0',
         callbackURL: 'https://localhost:5000/user/facebook/callback'
     },
+    twitter: {
+        consumerKey: 'I8hDQQfxSJ1PzC8GPs5Jey3ov',
+        consumerSecret: 'hoC2h8K8EEdcJ7ti965b8Ng9eR4SU33WKV50InWgwvk5EUvt5u',
+        callbackURL: 'https://localhost:5000/user/twitter/callback'
+    },
 };

@@ -46,6 +46,7 @@ router.put('/saveEditedProfile/:id', isLoggedIn, (req, res) => {
 	let postalCode = req.body.postalCode;
 	let phoneNo = req.body.phoneNo;
 	let gender = req.body.gender.toString();
+	let dob = req.body.dobUk;
 
 	User.findOne({
         where: {
@@ -62,6 +63,7 @@ router.put('/saveEditedProfile/:id', isLoggedIn, (req, res) => {
 			postalCode,
 			phoneNo,
 			gender,
+			dob,
         }).then(() => {
             res.redirect('/showDashboard');
 		}).catch(err => console.log(err));

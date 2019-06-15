@@ -1,4 +1,7 @@
 const moment = require('moment');
+const express = require('express');
+const exphbs = require('express-handlebars');
+
 module.exports = {
     radioCheck: function(value, radioValue){
         if (value === radioValue) {
@@ -20,5 +23,8 @@ module.exports = {
         } else {
             return 'An Uncle';
         }
+    },
+    ifEqual: (arg1, arg2, options) => {
+        return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
     },
 };
