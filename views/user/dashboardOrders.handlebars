@@ -86,8 +86,8 @@
                 </a>
               </li>
               <li class="tab">
-                <a href="/showDashboardWishlist" class="">
-                  Wishlist
+                <a href="#Notes" class="">
+                  Notes
                 </a>
               </li>
               <li class="tab">
@@ -103,34 +103,6 @@
           </nav>
           
           <div class="profile-content">
-          {{#if product}}
-            {{#each product}}
-              <div class="row">
-                <div class='product-card'>
-                  <div class="product-image">
-                    <img src="{{images}}" />
-                  </div>
-                  <div class="inner">
-                    <h2 class="title">{{name}}</h2>
-                    <h2 id="product_price">${{cost}}</h2>
-                    <p>{{status}}</p>
-                    <dl>
-                      <dt>Product Highlights</dt>
-                      <dd>{{description}}</dd>
-                    </dl>
-                  </div>
-                  <ul class="actions clear">
-                    <li>
-                      <a style="color: white;" href="/" class="product_anchor">product details</a>
-                    </li>
-                    <li>
-                      <a style="color: white;" href="/" class="product_anchor">Visit Shop</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            {{/each}}
-          {{/if}}
             <div class="row">
               <div class='product-card'>
                 <div class="product-image">

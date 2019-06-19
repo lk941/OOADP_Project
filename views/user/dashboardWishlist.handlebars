@@ -1,0 +1,114 @@
+<link type="text/css" rel="stylesheet" href="css/dashboardWishlist.css">
+<!-- Compiled and minified CSS -->
+<div class="row">
+  <div id="content" class="col s10 offset-s2">
+
+    <div class="row">
+      <div id="content_nav" class="col s12">
+        <div class="nav_header right">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+        <div id="profile" class="col s4">
+          <a class="action" href="/showEditProfile/{{user.id}}" style="position: absolute;">Edit Profile</a>
+          <div class="profile_header">
+            <img src="{{user.photoURL}}" alt="profile_picture" />
+            <h2>{{user.name}}</h2>
+            <p>{{checkUserType user.user_type}}</p>
+            {{#ifEqual user.user_type "Organization"}}
+              <ul style="list-style: none;">
+                <li>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star star-disabled"></i>
+                </li>
+                <li>
+                  <p class="stats"><i class="fa fa-fire"></i> 128</p>
+                </li>
+              </ul>
+            {{/ifEqual}}
+          </div>
+          <div class="divider"></div>
+          
+          <div class="profile_information">
+            <h3 style="margin-top: 5px;" >Contact Information</h3>
+            <ul style="list-style: none;">
+              <li>
+                <h4>Email Address:</h4>
+                <p>{{user.email}}</p>
+              </li>
+              <li>
+                <h4>Gender:</h4>
+                <p>{{user.gender}}</p>
+              </li>
+              <li>
+                <h4>Phone Number:</h4>
+                <p>{{user.phoneNo}}</p>
+              </li>
+              <li>
+                <h4>Date of birth:</h4>
+                <p>{{user.dob}}</p>
+              </li>
+              <li>
+                <h4>Address:</h4>
+                <p>{{user.address}}, {{user.unitNo}}, {{user.postalCode}}</p>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="divider"></div>
+          {{#ifEqual user.user_type "Organization"}}
+            <div class="profile_custom">
+              <h3 style="margin-top: 5px;">Organization Information</h3>
+              <ul>
+                <li>
+                  <h4>Website:</h4>
+                  <p>ORGANIZATIONWEBSITE.COM</p>
+                </li>
+                <li>
+                  <h4>Website Phone Number:</h4>
+                  <p>1800-LMAO-FAM-NOT-DONE-WITH-ORGANIZATION-PROFILE-YET</p>
+                </li>
+              </ul>
+            </div>
+        {{/ifEqual}}
+        </div>
+        <div id="profile_content" class="col s8">
+          <nav id="dashboardNav">
+            <ul>
+              <li class="tab">
+                <a href="/showDashboard">
+                  Orders
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#" class="active">
+                  Wishlist
+                </a>
+              </li>
+              <li class="tab">
+                <a href="#events">
+                  Events
+                </a>
+              </li>
+            </ul>
+            
+            <div class="nav_arrows">
+        </div>
+            
+          </nav>
+          
+          <div class="profile-content">
+          
+          </div>
+          
+        </div>
+    </div><!-- .row profile -->
+
+  </div><!-- .s9 content -->
+    
+</div><!-- .row -->

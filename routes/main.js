@@ -4,6 +4,8 @@ const alertMessage= require('../helpers/messenger');
 const ensureAuthenticated = require('../helpers/auth');
 const User = require('../models/User');
 const passport = require('passport');
+const Order = require('../models/Order');
+const Product = require('../models/Product');
 
 
 router.get('/', (req, res) => {
@@ -31,10 +33,62 @@ router.get('/showRegister', (req, res) => {
 })
 
 
-// Dashboard 
+// Dashboard: Order
 router.get('/showDashboard', isLoggedIn, (req, res) => {
-    res.render('user/dashboard', {user: req.user})
+	Order.findAll({
+		where: {
+			userId: req.user.id,
+		},
+		raw: true,
+	}).then((order) => {
+		//var ret_orders = [];
+		ret_product = [];
+		// Maps the orders list before rendering the template
+		Promise.all(order.map(element => {
+			return Product.findOne({
+				where: {
+					id: element.productId
+				}
+			}).then((product) => {
+				let the_product = {
+					id: product.id,
+					orgId: product.orgId,
+					name: product.name,
+					product_type: product.product_type,
+					description: product.description,
+					publishDate: product.publishDate,
+					cost: product.cost,
+					origin: product.origin,
+					deliveryfee: product.delivery,
+					images: product.images,
+					ratings: product.ratings,
+					comments: product.comments,
+					status: element.status,
+				}
+				ret_product.push(the_product)
+			})
+		})).then(() => {
+			// console.log('============ HERE ARE THE ORDERS ============');
+			// console.log(order);
+			// console.log('============ HERE ARE THE PRODUCTS ============');
+			// console.log(ret_product);
+			res.render('user/dashboard', {
+				user: req.user,
+				order,
+				product: ret_product,
+			});
+		})
+	})
 })
+
+
+// Dashboard: Wishlist
+router.get('/showDashboardWishlist', isLoggedIn, (req, res) => {
+	res.render('user/dashboardWishlist', {
+
+	});
+});
+
 
 // Save edited Profile
 router.put('/saveEditedProfile/:id', isLoggedIn, (req, res) => {

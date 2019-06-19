@@ -5,6 +5,9 @@ const Product = db.define('product', {
     orgId: {
         type: Sequelize.STRING
     },
+    name: {
+        type: Sequelize.STRING
+    },
     product_type: {
         type: Sequelize.STRING
     },

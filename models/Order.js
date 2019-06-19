@@ -3,7 +3,7 @@ const db = require('../config/DBConfig');
 
 const Order = db.define('order', {
     user_id: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
     },
     boughtDate: {
         type: Sequelize.DATE
@@ -15,7 +15,7 @@ const Order = db.define('order', {
         type: Sequelize.STRING
     },
     product_id: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
     },
     quantity: {
         type: Sequelize.INTEGER
@@ -25,7 +25,7 @@ const Order = db.define('order', {
     },
     location: {
         type: Sequelize.STRING
-    }
+    },
 });
 
 module.exports = Order;
