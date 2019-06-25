@@ -81,7 +81,7 @@ router.post('/register', (req, res) => {
                     name,
                     email,
                     password, 
-                    password2
+                    password2,
         });
     } else {
         // Create new user record
@@ -93,7 +93,8 @@ router.post('/register', (req, res) => {
             });
         });
     }).then(password => {
-        User.create({ name, email, password, user_type, status, photoURL })
+        let wallet = 0;
+        User.create({ name, email, password, user_type, status, photoURL, wallet })
         .then(user => {
             alertMessage(res, 'success', user.name + ' added. Please login', 'fas fa-sign-in-alt', true);
             res.redirect('/showLogin');

@@ -128,7 +128,43 @@ setTimeout(function() {
 // The 'building' layer in the mapbox-streets vector source contains building-height
 // data from OpenStreetMap.
 map.on('load', function() {
+  // create the popup
+  var popup = new mapboxgl.Popup({ offset: 25 })
+    .setText('Placeholder');
+  
+  // create DOM element for the marker
+  var el = document.createElement('div');
+  el.id = 'marker';
+
+
+  /*
+  {{#if user}}
+    {{#each order}}
+
+      var mapboxClient = new MapboxClient(mapboxgl.accessToken);
+      mapboxClient.geocodeForward(order.location, { limit: 1 }, function(err, res) {
+
+          var queryCoords = res.features[0].geometry.coordinates;
+
+          console.log(queryCoords)
+
+      });
+
+      // create the marker
+        var markers = new mapboxgl.Marker(el)
+          .setLngLat([103.81654, 1.3209084])
+          .setPopup(popup) // sets a popup on this marker
+          .addTo(map);
+
+    {{/each}}
+  {{/if}}
+  */
 	// Insert the layer beneath any symbol layer.
+  // create the marker
+        var markers = new mapboxgl.Marker(el)
+          .setLngLat([103.81654, 1.3209084])
+          .setPopup(popup) // sets a popup on this marker
+          .addTo(map);
 
 	var layers = map.getStyle().layers;
 	
@@ -180,7 +216,7 @@ map.on('load', function() {
         });
         map.addLayer({
           "id": "circle1",
-          "source": "point1",
+          "source":"point1" ,
           "type": "circle",
           "paint": {
             "circle-radius": initialRadius,
@@ -362,21 +398,26 @@ map.on('load', function() {
 
 		//setInterval(function(){ animateLine(); }, 3000);
 
-});
+    // Listener for marker click
+    markers.on('click', function(e) {
+      // Force close the popup.
+      e.layer.closePopup();
 
-// create the popup
-var popup = new mapboxgl.Popup({ offset: 25 })
-	.setText('Placeholder');
- 
-// create DOM element for the marker
-var el = document.createElement('div');
-el.id = 'marker';
- 
-// create the marker
-var markers = new mapboxgl.Marker(el)
-	.setLngLat([103.81654, 1.3209084])
-	.setPopup(popup) // sets a popup on this marker
-	.addTo(map);
+      var feature = e.layer.feature;
+      var title = feature.properties.title;
+      var content = feature.properties.description;
+      var latlng = feature.geometry.coordinates;
+
+      // Modal Content
+      $("#marker_title").text(title);
+      $("#marker_content").text(content);
+      $("#marker_latlng").text(formatLatLng(latlng));
+
+      $('#exampleModal').modal('show');
+    });
+
+
+});
 
 // ============ WIP Modal Popup ============ \\
 
@@ -577,24 +618,6 @@ var geoJson = [{
 
 markers.setGeoJSON(geoJson);
 */
-
-// Listener for marker click
-markers.on('click', function(e) {
-  // Force close the popup.
-  e.layer.closePopup();
-
-  var feature = e.layer.feature;
-  var title = feature.properties.title;
-  var content = feature.properties.description;
-  var latlng = feature.geometry.coordinates;
-
-  // Modal Content
-  $("#marker_title").text(title);
-  $("#marker_content").text(content);
-  $("#marker_latlng").text(formatLatLng(latlng));
-
-  $('#exampleModal').modal('show');
-});
 
 // Filter click event
 $('.menu-ui a').on('click', function() {

@@ -72,6 +72,7 @@ function localStrategy(passport) {
                             user_type: 'Member_facebook' + profile.id,
                             status: 'ACTIVE',
                             email: profile.emails[0].value,
+                            wallet: 0,
                         })
                         .then((user) => {
                             console.log('new user created: ' + user);
@@ -106,6 +107,7 @@ function localStrategy(passport) {
                         photoURL: ((profile.photos)[0]).value,
                         user_type: 'Member_twitter' + profile.id,
                         status: 'ACTIVE',
+                        wallet: 0,
                     })
                     .then((user) => {
                         console.log('new user created: ' + user);

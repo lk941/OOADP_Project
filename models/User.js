@@ -60,6 +60,9 @@ const User = db.define('user', {
     products: {
         type: Sequelize.STRING
     },
+    wallet: {
+        type: Sequelize.INTEGER
+    },
 });
 
 module.exports = User;
