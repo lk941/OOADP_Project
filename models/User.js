@@ -63,6 +63,9 @@ const User = db.define('user', {
     wallet: {
         type: Sequelize.INTEGER
     },
+    verified: {
+        type: Sequelize.BOOLEAN
+    },
 });
 
 module.exports = User;

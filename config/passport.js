@@ -1,9 +1,10 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const GoogleStrategy = require('passport-google-oauth20');
+//const GoogleStrategy = require('passport-google-oauth20');
 const keys = require('./keys');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // Load user model 
 const User = require('../models/User');
@@ -73,6 +74,7 @@ function localStrategy(passport) {
                             status: 'ACTIVE',
                             email: profile.emails[0].value,
                             wallet: 0,
+                            verified: 1,
                         })
                         .then((user) => {
                             console.log('new user created: ' + user);
@@ -108,6 +110,7 @@ function localStrategy(passport) {
                         user_type: 'Member_twitter' + profile.id,
                         status: 'ACTIVE',
                         wallet: 0,
+                        verified: 1,
                     })
                     .then((user) => {
                         console.log('new user created: ' + user);
@@ -122,7 +125,38 @@ function localStrategy(passport) {
         });
     }));
     
-    
+    passport.use(
+        new GoogleStrategy({
+            // options for the google strat
+            callbackURL: '/user/google/callback',
+            clientID: keys.google.clientID,
+            clientSecret: keys.google.clientSecret,
+        }, (accessToken, refreshToken, profile, done) => {
+            process.nextTick(() => {
+                // passport callback function
+                User.findOne({ where: {user_type: 'Member_google' + profile.id} }).then((user) => {
+                    if (user){
+                        // already have the user
+                        console.log('user is: ', user);
+                        return done(null, user);
+                    } else {
+                        // if not, create user in our db
+                        User.create({ 
+                            name: profile.displayName,
+                            photoURL: '/img/profiledefault.png',
+                            user_type: 'Member_google' + profile.id,
+                            status: 'ACTIVE',
+                            email: profile.emails[0].value,
+                            verified: 1,
+                        }).then((user) => {
+                            console.log('new user created: ' + user);
+                            return done(null, user);
+                        })
+                    }
+                })
+            })
+        })
+    ) 
 }
 
 
