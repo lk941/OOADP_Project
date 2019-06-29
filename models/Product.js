@@ -35,7 +35,14 @@ const Product = db.define('product', {
     comments: {
         type: Sequelize.STRING(3000)
     },
-    
+    // Specially for services only
+    service_date: {
+        type: Sequelize.DATE,
+        allowNull: true,
+    },
+    reminded: {
+        type: Sequelize.BOOLEAN
+    },
 });
 
 module.exports = Product;

@@ -152,25 +152,28 @@ router.get('/showDashboard', isLoggedIn, (req, res) => {
 		Promise.all(order.map(element => {
 			return Product.findOne({
 				where: {
-					id: element.productId
+					id: element.productId,
 				}
 			}).then((product) => {
-				let the_product = {
-					id: product.id,
-					orgId: product.orgId,
-					name: product.name,
-					product_type: product.product_type,
-					description: product.description,
-					publishDate: product.publishDate,
-					cost: product.cost,
-					origin: product.origin,
-					deliveryfee: product.delivery,
-					images: product.images,
-					ratings: product.ratings,
-					comments: product.comments,
-					status: element.status,
+				console.log(product.product_type);
+				if (product.product_type === "Goods") {
+					let the_product = {
+						id: product.id,
+						orgId: product.orgId,
+						name: product.name,
+						product_type: product.product_type,
+						description: product.description,
+						publishDate: product.publishDate,
+						cost: product.cost,
+						origin: product.origin,
+						deliveryfee: product.delivery,
+						images: product.images,
+						ratings: product.ratings,
+						comments: product.comments,
+						status: element.status,
+					}
+					ret_product.push(the_product)
 				}
-				ret_product.push(the_product)
 			})
 		})).then(() => {
 			// console.log('============ HERE ARE THE ORDERS ============');
@@ -200,6 +203,56 @@ router.get('/showDashboardWallet', isLoggedIn, (req, res) => {
 	});
 });
 
+// ========== Dashboard Service ========== //
+router.get('/showDashboardService', isLoggedIn, (req, res) => {
+	Order.findAll({
+		where: {
+			userId: req.user.id,
+		},
+		raw: true,
+	}).then((order) => {
+		//var ret_orders = [];
+		ret_product = [];
+		// Maps the orders list before rendering the template
+		Promise.all(order.map(element => {
+			return Product.findOne({
+				where: {
+					id: element.productId,
+				}
+			}).then((product) => {
+				console.log(product.product_type);
+				if (product.product_type === "Service") {
+					let the_product = {
+						id: product.id,
+						orgId: product.orgId,
+						name: product.name,
+						product_type: product.product_type,
+						description: product.description,
+						publishDate: product.publishDate,
+						cost: product.cost,
+						origin: product.origin,
+						deliveryfee: product.delivery,
+						images: product.images,
+						ratings: product.ratings,
+						comments: product.comments,
+						status: element.status,
+					}
+					ret_product.push(the_product)
+				}
+			})
+		})).then(() => {
+			// console.log('============ HERE ARE THE ORDERS ============');
+			// console.log(order);
+			// console.log('============ HERE ARE THE PRODUCTS ============');
+			// console.log(ret_product);
+			res.render('user/dashboardService', {
+				user: req.user,
+				order,
+				product: ret_product,
+			});
+		})
+	})
+});
 
 // Save edited Profile
 router.put('/saveEditedProfile/:id', isLoggedIn, (req, res) => {
@@ -294,13 +347,19 @@ router.get('/about', (req,res) => {
 	})
 });
 
-// callback route for google to redirect to
-/*
-router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-    res.send('you reached the callback URI');
-    res.redirect('user/login');
+// Service Join
+router.get("/joinService", (req, res) => {
+	Product.findAll({
+		where: {
+			product_type: "Service"
+		}
+	}).then((service) => {
+		res.render('/joinService', {
+			service,
+		})
+	})
 });
-*/
+
 
 
 
