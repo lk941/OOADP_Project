@@ -1,4 +1,6 @@
 <link type="text/css" rel="stylesheet" href="css/dashboardWishlist.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Compiled and minified CSS -->
 <div class="row">
   <div id="content" class="col s10 offset-s2">
@@ -108,12 +110,33 @@
           </nav>
           
           <div class="profile-content">
-            <h1> LMAO FAM THIS IS A TEST DAWG </h1>
-            <h2>Current Wallet Balance:</h2>
-            <h3>${{user.wallet}}</h3>
-            <form action="/pay" method="post">
-              <input type="submit" value="Deposit Wallet Money">
-            </form>
+            <div class="wallet-container text-center">
+            <div class="amount-box text-center">
+              <img src="https://lh3.googleusercontent.com/ohLHGNvMvQjOcmRpL4rjS3YQlcpO0D_80jJpJ-QA7-fQln9p3n7BAnqu3mxQ6kI4Sw" alt="wallet">
+              <p>Total Balance</p>
+              <p class="amount">${{user.wallet}}</p>
+            </div>
+
+            <div class="btn-group text-center">
+              <form action="/pay/1" method="post">
+                <input type="submit" class="btn" value="Add $10 Coins">
+              </form>
+            </div>
+
+            <div class="btn-group text-center">
+              <form action="/pay/2" method="post">
+                <input type="submit" class="btn" value="Add $25 Coins">
+              </form>
+            </div>
+
+            <div class="btn-group text-center">
+              <form action="/pay/3" method="post">
+                <input type="submit" class="btn" value="Add $50 Coins">
+              </form>
+            </div>
+          </div>
+        </div>
+
           </div>
           
         </div>

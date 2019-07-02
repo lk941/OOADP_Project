@@ -6,7 +6,9 @@ const User = require('../models/User');
 const passport = require('passport');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
-const paypal = require('paypal-rest-sdk');
+const paypal = require('paypal-rest-sdk'); // npm i paypal-rest-sdk
+const MapboxClient = require('mapbox'); 
+const client = new MapboxClient('pk.eyJ1IjoiY2Vld2FpIiwiYSI6ImNqbng3eDcyZDByeXgzcHBnY2w0cGloM2sifQ.NsvAT34SplBxuUvZsvUSKA');
 
 paypal.configure({
   'mode': 'sandbox', //sandbox or live
@@ -14,7 +16,50 @@ paypal.configure({
   'client_secret': 'EJ-fLOr86UPcMvcjHHIFgqBQcM9W16ri73uxPwuH62jsxkOPc6ppUVl3jr_IuM2MMF15NI29BXafW3fu'
 });
 
-router.post('/pay', (req, res) => {
+// pay 10
+router.post('/pay/1', (req, res) => {
+    const create_payment_json = {
+      "intent": "sale",
+      "payer": {
+          "payment_method": "paypal"
+      },
+      "redirect_urls": {
+          "return_url": "https://localhost:5000/success",
+          "cancel_url": "https://localhost:5000/cancel"
+      },
+      "transactions": [{
+          "item_list": {
+              "items": [{
+                  "name": "Deposit 10 Bucks into Likey's Wallet",
+                  "sku": "001",
+                  "price": "10.00",
+                  "currency": "USD",
+                  "quantity": 1
+			  },]
+          },
+          "amount": {
+              "currency": "USD",
+              "total": "10.00"
+          },
+          "description": "This is to put your Hard Earned Cash into Likey's Wallet. Quite self explainatory actually lmao."
+	  }]
+  };
+  
+	paypal.payment.create(create_payment_json, (error, payment) => {
+		if (error) {
+			throw error;
+		} else {
+			for(let i = 0;i < payment.links.length;i++){
+			if(payment.links[i].rel === 'approval_url'){
+				res.redirect(payment.links[i].href);
+			}
+			}
+		}
+	});
+  
+});
+
+router.post('/pay/2', (req, res) => {
     const create_payment_json = {
       "intent": "sale",
       "payer": {
@@ -28,33 +73,76 @@ router.post('/pay', (req, res) => {
           "item_list": {
               "items": [{
                   "name": "Deposit 25 Bucks into Likey's Wallet",
-                  "sku": "001",
+                  "sku": "002",
                   "price": "25.00",
                   "currency": "USD",
                   "quantity": 1
-              }]
+			  },]
           },
           "amount": {
               "currency": "USD",
               "total": "25.00"
           },
-          "description": "This is to put your $25 Bucks into Likey's Wallet. Quite self explainatory actually lmao."
-      }]
+          "description": "This is to put your Hard Earned Cash into Likey's Wallet. Quite self explainatory actually lmao."
+	  }]
   };
   
-  paypal.payment.create(create_payment_json, (error, payment) => {
-    if (error) {
-        throw error;
-    } else {
-        for(let i = 0;i < payment.links.length;i++){
-          if(payment.links[i].rel === 'approval_url'){
-            res.redirect(payment.links[i].href);
-          }
-        }
-    }
-  });
+	paypal.payment.create(create_payment_json, (error, payment) => {
+		if (error) {
+			throw error;
+		} else {
+			for(let i = 0;i < payment.links.length;i++){
+			if(payment.links[i].rel === 'approval_url'){
+				res.redirect(payment.links[i].href);
+			}
+			}
+		}
+	});
   
-  });
+});
+  
+router.post('/pay/3', (req, res) => {
+    const create_payment_json = {
+      "intent": "sale",
+      "payer": {
+          "payment_method": "paypal"
+      },
+      "redirect_urls": {
+          "return_url": "https://localhost:5000/success",
+          "cancel_url": "https://localhost:5000/cancel"
+      },
+      "transactions": [{
+          "item_list": {
+              "items": [{
+                  "name": "Deposit 50 Bucks into Likey's Wallet",
+                  "sku": "003",
+                  "price": "50.00",
+                  "currency": "USD",
+                  "quantity": 1
+			  },]
+          },
+          "amount": {
+              "currency": "USD",
+              "total": "50.00"
+          },
+          "description": "This is to put your Hard Earned Cash into Likey's Wallet. Quite self explainatory actually lmao."
+	  }]
+  };
+  
+	paypal.payment.create(create_payment_json, (error, payment) => {
+		if (error) {
+			throw error;
+		} else {
+			for(let i = 0;i < payment.links.length;i++){
+			if(payment.links[i].rel === 'approval_url'){
+				res.redirect(payment.links[i].href);
+			}
+			}
+		}
+	});
+  
+});
+  
   
   router.get('/success', (req, res) => {
     const payerId = req.query.PayerID;
@@ -98,7 +186,6 @@ router.post('/pay', (req, res) => {
   
 
 router.get('/', (req, res) => {
-	const title = 'NodeJS Proj';
 	try {
 		Order.findAll({
 			where: {
@@ -106,19 +193,69 @@ router.get('/', (req, res) => {
 			},
 			raw: true,
 		}).then((order) => {
-			res.render('index', {
-				title: title,
-				user: req.user,
-				order: order,
-			}) // renders views/index.handlebars
+			ret_product = [];
+			Promise.all(order.map(element => {
+				return Product.findOne({
+					where: {
+						id: element.productId,
+					}
+				}).then((product) => {
+					
+					// let coords = [];
+
+					let coords = client.geocodeForward(element.destination, { limit: 1 }, ((err, res) => {
+						return queryCoords = res.features[0].geometry.coordinates;
+					}));
+
+					// console.log(coords);
+
+					// let coords = client.geocodeForward(element.destination);
+					// // 	.then(function(res) {
+					// // 		// res is the http response, including: status, headers and entity properties
+					// // 		var data = res.features[0].geometry.coordinates; // data is the geocoding result as parsed JSON
+					// // 		console.log(data);
+					// // 	})
+					// // 	.catch(function(err) {
+					// // 		// handle errors
+					// // 		console.log(Error(err));
+					// // });
+					// console.log(coords);
+					
+
+					let the_product = {
+						id: product.id,
+						orgId: product.orgId,
+						name: product.name,
+						product_type: product.product_type,
+						description: product.description,
+						publishDate: product.publishDate,
+						cost: product.cost,
+						origin: product.origin,
+						deliveryfee: product.delivery,
+						images: product.images,
+						ratings: product.ratings,
+						comments: product.comments,
+						status: element.status,
+						location: element.location,
+						destination: element.destination,
+					}
+					//console.log(the_product);
+					ret_product.push(the_product);
+					//console.log('This is the ret_product ' + ret_product);
+				})
+			})).then(() => {
+				//console.log("The products: " + ret_product);
+				res.render('index', {
+					user: req.user,
+					product: ret_product,
+				});
+			})
 		})
 	} catch {
 		res.render('index', {
-				title: title,
 				user: req.user,
-		}) // renders views/index.handlebars
+		})
 	}
-	
 });
 
 // Logout User

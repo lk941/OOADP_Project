@@ -22,7 +22,7 @@
 
 <style>
  
-#marker {
+.marker {
 	background-image: url('https://dazedimg-dazedgroup.netdna-ssl.com/786/azure/dazed-prod/1220/4/1224826.jpg');
 	background-size: cover;
 	width: 50px;
@@ -30,7 +30,7 @@
 	border-radius: 50%;
 	cursor: pointer;
 }
- 
+
 .mapboxgl-popup {
 	max-width: 200px;
 }
@@ -66,10 +66,12 @@
     </div>
   </div>
 </div>
-
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js' charset='utf-8'></script>
 <script>
-
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2Vld2FpIiwiYSI6ImNqbng3eDcyZDByeXgzcHBnY2w0cGloM2sifQ.NsvAT34SplBxuUvZsvUSKA';
+
+var mapboxClient = new MapboxClient(mapboxgl.accessToken);
+
 var map = new mapboxgl.Map({
 	container: 'map',
 	style: 'mapbox://styles/mapbox/light-v9',
@@ -112,6 +114,7 @@ setTimeout(function() {
       var userLat = position.coords.latitude;
       var userLng = position.coords.longitude;
       endPoint = [userLng, userLat];
+      console.log(endPoint);
     });
 
       var framesPerSecond = 20;
@@ -128,43 +131,232 @@ setTimeout(function() {
 // The 'building' layer in the mapbox-streets vector source contains building-height
 // data from OpenStreetMap.
 map.on('load', function() {
-  // create the popup
-  var popup = new mapboxgl.Popup({ offset: 25 })
-    .setText('Placeholder');
-  
+      // create the popup
+      /*
+      var popup = new mapboxgl.Popup({ offset: 25 })
+        .setText('Placeholder');
+      
+      // create DOM element for the marker
+      var el = document.createElement('div');
+      el.id = 'marker';
+      */
   // create DOM element for the marker
-  var el = document.createElement('div');
-  el.id = 'marker';
+      var el = document.createElement('div');
+      el.className = 'marker';
+      var popup = new mapboxgl.Popup({ offset: 25 })
+        .setText('Placeholder');
 
-
-  
   {{#if user}}
-    {{#each order}}
+    {{#each product}}
+    //console.log(product);
+      //console.log({{order}});
 
-      var mapboxClient = new MapboxClient(mapboxgl.accessToken);
-      mapboxClient.geocodeForward(order.location, { limit: 1 }, function(err, res) {
+      var queryCoords = [];
+      var markers = 0;
+      mapboxClient.geocodeForward("{{location}}", { limit: 1 }, function(err, res) {
+          var el = document.createElement('div');
+          el.className = 'marker';
+          el.style.backgroundImage = 'url({{images}})';
 
-          var queryCoords = res.features[0].geometry.coordinates;
+          queryCoords = res.features[0].geometry.coordinates;
 
-          console.log(queryCoords)
+          console.log(queryCoords[0],queryCoords[1]);
+          // create the marker
+      
+          markers = new mapboxgl.Marker(el)
+            .setLngLat([queryCoords[0], queryCoords[1]])
+            .setPopup(new mapboxgl.Popup({offset: 25}) // sets a popup on this marker
+              	.setHTML('<h3>' + "{{name}}" + '</h3><p>' + '{{description}}' + '</p>' + '<a href="">' + 'Track' + '</a>'))
+            .addTo(map);
 
+            markers.className = 'marker';
+            //markers.style.backgroundImage = 'url({{images}})';
+
+              markers.on('click', function(e) {
+                // Force close the popup.
+                e.layer.closePopup();
+
+                var feature = e.layer.feature;
+                var title = feature.properties.title;
+                var content = feature.properties.description;
+                var latlng = feature.geometry.coordinates;
+
+                // Modal Content
+                $("#marker_title").text(title);
+                $("#marker_content").text(content);
+                $("#marker_latlng").text(formatLatLng(latlng));
+
+                $('#exampleModal').modal('show');
+              });
+
+              var origin{{id}} = [queryCoords[0], queryCoords[1]];
+              
+              mapboxClient.geocodeForward("{{destination}}", { limit: 1 }, function(err, res) {
+                  var destCoords = res.features[0].geometry.coordinates;
+                  console.log('Destination is ', destCoords, " at " + '{{destination}}');
+                  var destination{{id}} = [destCoords[0], destCoords[1]];
+              
+                  // A simple line from origin to destination.
+                  var route{{id}} = {
+                    "type": "FeatureCollection",
+                    "features": [{
+                      "type": "Feature",
+                      "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                          origin{{id}},
+                          destination{{id}}
+                        ]
+                      }
+                    }]
+                  };
+                  
+                  // A single point that animates along the route.
+                  // Coordinates are initially set to origin.
+                  var point{{id}} = {
+                    "type": "FeatureCollection",
+                    "features": [{
+                      "type": "Feature",
+                      "properties": {},
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": origin{{id}}
+                      }
+                    }]
+                  };
+                  
+                  // Calculate the distance in kilometers between route start/end point.
+                  var lineDistance = turf.lineDistance(route{{id}}.features[0], 'kilometers');
+                  
+                  var arc = [];
+                  
+                  // Number of steps to use in the arc and animation, more steps means
+                  // a smoother arc and animation, but too many steps will result in a
+                  // low frame rate
+                  var steps = 500;
+                  
+                  // Draw an arc between the `origin` & `destination` of the two points
+                  for (var i = 0; i < lineDistance; i += lineDistance / steps) {
+                    var segment = turf.along(route{{id}}.features[0], i, 'kilometers');
+                    arc.push(segment.geometry.coordinates);
+                  }
+                  
+                  // Update the route with calculated arc coordinates
+                  route{{id}}.features[0].geometry.coordinates = arc;
+                  
+                  // Used to increment the value of the point measurement against the route.
+                  var counter = 0;
+                  
+                    // Add a source and layer displaying a point which will be animated in a circle.
+                    map.addSource('route{{id}}', {
+                      "type": "geojson",
+                      "data": route{{id}}
+                    });
+                    
+                    // Around this area is whr the error occurs
+                    map.addSource('point{{id}}', {
+                      "type": "geojson",
+                      "data": point{{id}}
+                    });
+                    
+                    map.addLayer({
+                      "id": "route{{id}}",
+                      "source": "route{{id}}",
+                      "type": "line",
+                      "paint": {
+                        "line-width": 2,
+                        "line-color": "#007cbf"
+                      }
+                    });
+                    
+                    map.addLayer({
+                      "id": "point{{id}}",
+                      "source": "point{{id}}",
+                      "type": "symbol",
+                      "layout": {
+                        "icon-image": "airport-15",
+                        "icon-rotate": ["get", "bearing"],
+                        "icon-rotation-alignment": "map",
+                        "icon-allow-overlap": true,
+                        "icon-ignore-placement": true
+                      }
+                    });
+                    
+                    function animate() {
+                      // Update point geometry to a new position based on counter denoting
+                      // the index to access the arc.
+                      point{{id}}.features[0].geometry.coordinates = route{{id}}.features[0].geometry.coordinates[counter];
+                        
+                      // Calculate the bearing to ensure the icon is rotated to match the route arc
+                      // The bearing is calculate between the current point and the next point, except
+                      // at the end of the arc use the previous point and the current point
+                      point{{id}}.features[0].properties.bearing = turf.bearing(
+                        turf.point(route{{id}}.features[0].geometry.coordinates[counter >= steps ? counter - 1 : counter]),
+                        turf.point(route{{id}}.features[0].geometry.coordinates[counter >= steps ? counter : counter + 1])
+                      );
+                        
+                      // Update the source with this new data.
+                      map.getSource('point{{id}}').setData(point{{id}});
+                        
+                        // Request the next frame of animation so long the end has not been reached.
+                        if (counter < steps) {
+                          requestAnimationFrame(animate);
+                        }
+                        counter = counter + 1;
+                    }
+
+                  /*
+                      document.getElementById('replay').addEventListener('click', function() {
+                        // Set the coordinates of the original point back to origin
+                        point.features[0].geometry.coordinates = origin;
+                        // Update the source layer
+                        map.getSource('point').setData(point);
+                        // Reset the counter
+                        counter = 0;
+                        // Restart the animation.
+                        animate(counter);
+                      });
+                      */
+                  
+
+                    // Start the animation.
+                    animate(counter);
+
+              });
+            
       });
 
-      // create the marker
-        var markers = new mapboxgl.Marker(el)
-          .setLngLat([103.81654, 1.3209084])
-          .setPopup(popup) // sets a popup on this marker
-          .addTo(map);
+  {{/each}}
+{{/if}}
 
-    {{/each}}
-  {{/if}}
-  
-	// Insert the layer beneath any symbol layer.
+
+  // Insert the layer beneath any symbol layer.
   // create the marker
-        var markers = new mapboxgl.Marker(el)
-          .setLngLat([103.81654, 1.3209084])
-          .setPopup(popup) // sets a popup on this marker
-          .addTo(map);
+var markers = new mapboxgl.Marker(el)
+  .setLngLat([103.81654, 1.3209084])
+  .setPopup(popup) // sets a popup on this marker
+  .addTo(map);
+
+// Listener for marker click
+  
+  markers.on('click', function(e) {
+    // Force close the popup.
+    e.layer.closePopup();
+
+    var feature = e.layer.feature;
+    var title = feature.properties.title;
+    var content = feature.properties.description;
+    var latlng = feature.geometry.coordinates;
+
+    // Modal Content
+    $("#marker_title").text(title);
+    $("#marker_content").text(content);
+    $("#marker_latlng").text(formatLatLng(latlng));
+
+    $('#exampleModal').modal('show');
+});
+
+
 
 	var layers = map.getStyle().layers;
 	
@@ -176,6 +368,7 @@ map.on('load', function() {
 		}
 	}
 	
+
 	map.addLayer({
 		'id': '3d-buildings',
 		'source': 'composite',
@@ -203,7 +396,7 @@ map.on('load', function() {
 			'fill-extrusion-opacity': .6
 		}
 	}, labelLayerId);
-
+/*
         // Point 1
         map.addSource('point1', {
           "type": "geojson",
@@ -308,7 +501,7 @@ map.on('load', function() {
 
           if (i < diffX) {
             i += sfX;
-          }
+          } 
 
           if (Math.abs(j) < Math.abs(diffY)) {
             j += sfY;
@@ -393,28 +586,11 @@ map.on('load', function() {
 
 				animateLine();
 			}, 6000);
+*/
 
 		//animateLine();
 
 		//setInterval(function(){ animateLine(); }, 3000);
-
-    // Listener for marker click
-    markers.on('click', function(e) {
-      // Force close the popup.
-      e.layer.closePopup();
-
-      var feature = e.layer.feature;
-      var title = feature.properties.title;
-      var content = feature.properties.description;
-      var latlng = feature.geometry.coordinates;
-
-      // Modal Content
-      $("#marker_title").text(title);
-      $("#marker_content").text(content);
-      $("#marker_latlng").text(formatLatLng(latlng));
-
-      $('#exampleModal').modal('show');
-    });
 
 
 });
