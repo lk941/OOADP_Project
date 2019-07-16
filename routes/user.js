@@ -129,11 +129,7 @@ router.post('/login', (req, res, next) => {
     });
 
 function sendEmail(userId, email, token){ 
-    //sgMail.setApiKey('SG.TnaxWSoBRaK1Y8Nx4Ny8fg.9R7TT_1enZHauVKGa4t3_uBe149cu-Qd2UaAo-3VW6IS'); 
-    //Vid Jot's APIKEY
-    sgMail.setApiKey('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'); 
-    //SENDGRID_APY_KEY = 'SG.TnaxWSoBRaK1Y8Nx4Ny8fg.9R7TT_1enZHauVKGa4t3_uBe149cu-Qd2UaAo-3VW6IS';
-    //sgMail.setApiKey(process.env.SENDGRID_APY_KEY);
+    sgMail.setApiKey('<SET YOUR SENDGRID API KEY HERE>'); 
     const message = {
         to: email,
         from: 'Do Not Reply <admin@likey.sg>',
