@@ -86,8 +86,14 @@
 							{{#if user}}
 								<li><a href="/showDashboard">My Account</a><span class="icon"><i class="fas fa-tachometer-alt"></i></span></li>
 								<li><a href="/showDashboardWishlist">Wishlist</a><span class="icon"><i class="fas fa-user-friends"></i></span></li>
-								<li><a href="/">Make Your Event</a><span class="icon"><i class="fas fa-calendar-alt"></i></span></li>
-								<li><a href="/">Create Listings</a><span class="icon"><i class="fas fa-clipboard-list"></i></span></li>	
+								{{#if user}}
+									{{#if user.is_org}}
+										{{!-- <p style="display: none;"></p> --}}
+										<li><a href="/manageOrder">Manage Orders</a><span class="icon"><i class="far fa-folder-open"></i></span></li>	
+									{{else}}
+										<li><a href="/perInfo">Sell on Likey!</a><span class="icon"><i class="fas fa-comment-dollar"></i></span></li>	
+									{{/if}}
+								{{/if}}					
 								<li><a href="/logout">Logout</a><span class="icon"><i class="fas fa-sign-out-alt"></i></span></li>
 							{{else}}
 								<li><a href="/showLogin">Login</a><span class="icon"><i class="fas fa-sign-in-alt"></i></span></li>
@@ -98,11 +104,11 @@
 	
 					<li><a href="">Join Events</a><span class="icon"><i class="fas fa-calendar-alt"></i></span></li>
 	
-							<li><a href="">Business</a><span class="icon"><i class="fas fa-map-marked-alt"></i></span></li>
+					<li><a href="">Business</a><span class="icon"><i class="fas fa-map-marked-alt"></i></span></li>
 	
-					<li><a href="">About Us</a><span class="icon"><i class="fas fa-info-circle"></i></span></li>
+					{{!-- <li><a href="">About Us</a><span class="icon"><i class="fas fa-info-circle"></i></span></li>
 	
-					<li><a href="">Listings</a><span class="icon"><i class="fas fa-list-ul"></i></span></li>
+					<li><a href="">Listings</a><span class="icon"><i class="fas fa-list-ul"></i></span></li> --}}
 	
 				</ul>
 	

@@ -46,6 +46,7 @@ const {formatDate} = require('./helpers/hbs');
 const {radioCheck} = require('./helpers/hbs');
 const {checkUserType} = require('./helpers/hbs');
 const {ifEqual} = require('./helpers/hbs');
+const {ifEqualModal} = require('./helpers/hbs');
 
 /*
  * Creates an Express server - Express is a web application framework for creating web applications
@@ -70,6 +71,7 @@ app.engine('handlebars', exphbs({
 		radioCheck:radioCheck,
 		checkUserType,
 		ifEqual,
+		ifEqualModal
 	},
 
 	defaultLayout: 'main' // Specify default template views/layout/main.handlebar 
@@ -81,6 +83,13 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 app.use(bodyParser.json());
+
+
+app.post("/totp-secret", (request, response, next) => {
+    var secret = Speakeasy.generateSecret({ length: 20 });
+    response.send({ "secret": secret.base32 });
+});
+
 
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
 app.use(express.static(path.join(__dirname, 'public')));

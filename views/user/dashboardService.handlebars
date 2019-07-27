@@ -16,8 +16,12 @@
           <div class="profile_header">
             <img src="{{user.photoURL}}" alt="profile_picture" />
             <h2>{{user.name}}</h2>
-            <p>{{checkUserType user.user_type}}</p>
-            {{#ifEqual user.user_type "Organization"}}
+            {{#if user.is_org}}
+              <p>Organization</p>
+            {{else}}
+              <p>{{checkUserType user.user_type}}</p>
+            {{/if}}
+            {{#if user.is_org}}
               <ul style="list-style: none;">
                 <li>
                 <i class="fa fa-star"></i>
@@ -30,12 +34,12 @@
                   <p class="stats"><i class="fa fa-fire"></i> 128</p>
                 </li>
               </ul>
-            {{/ifEqual}}
+            {{/if}}
           </div>
           <div class="divider"></div>
           
           <div class="profile_information">
-            <h3 style="margin-top: 5px;" >Contact Information</h3>
+            <h3 style="margin-top: 5px;" >Personal Information</h3>
             <ul style="list-style: none;">
               <li>
                 <h4>Email Address:</h4>
@@ -61,21 +65,41 @@
           </div>
           
           <div class="divider"></div>
-          {{#ifEqual user.user_type "Organization"}}
+          {{#if user.is_org}}
             <div class="profile_custom">
               <h3 style="margin-top: 5px;">Organization Information</h3>
               <ul>
                 <li>
-                  <h4>Website:</h4>
-                  <p>ORGANIZATIONWEBSITE.COM</p>
+                  <h4>Organization Name:</h4>
+                  <p>{{user.org_name}}</p>
                 </li>
                 <li>
-                  <h4>Website Phone Number:</h4>
-                  <p>1800-LMAO-FAM-NOT-DONE-WITH-ORGANIZATION-PROFILE-YET</p>
+                  <h4>Website:</h4>
+                  <p>{{user.org_website}}</p>
+                </li>
+                <li>
+                  <h4>Organization Phone Number:</h4>
+                  <p>{{user.org_phone}}</p>
+                </li>
+                <li>
+                  <h4>Organization Location:</h4>
+                  <p>{{user.org_location}}</p>
+                </li>
+                <li>
+                  <h4>Organization Size:</h4>
+                  {{#ifEqual user.org_size "individual"}}
+                    <p>Individual</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "sme"}}
+                    <p>Small Medium Enterprise</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "mnc"}}
+                    <p>Multinational Corporation</p>
+                  {{/ifEqual}}
                 </li>
               </ul>
             </div>
-        {{/ifEqual}}
+        {{/if}}
         </div>
         <div id="profile_content" class="col s8">
           <nav id="dashboardNav">
@@ -135,32 +159,19 @@
                 </div>
               </div>
             {{/each}}
-          {{/if}}
-            <div class="row">
-              <div class='product-card'>
-                <div class="product-image">
-                  <img src="https://cdn.gearpatrol.com/wp-content/uploads/2018/07/Herschel-Supply-Co-Pop-Quiz-gear-patrol-full-lead.jpg" />
-                </div>
-                <div class="inner">
-                  <h2 class="title">Herschel Pop Quiz Bag</h2>
-                  <h2 id="product_price">$79.00</h2>
-                  <p>DELIVERED</p>
-                  <dl>
-                    <dt>Product Highlights</dt>
-                    <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
-                    <dd>Nam quis eros leo. Donec pharetra fermentum tellus eu semper.</dd>
-                  </dl>
-                </div>
-                <ul class="actions clear">
-                  <li>
-                    <a class="product_anchor">product details</a>
-                  </li>
-                  <li>
-                    <a class="product_anchor">Visit Shop</a>
-                  </li>
-                </ul>
+            
+            {{else}}
+
+            <div class="row" style="text-align: center; font-size:60px;">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <i class="fas fa-concierge-bell"></i>
+                <p style="font-size:20px;">Join a Service!</p>
               </div>
             </div>
+
+
+          {{/if}}
+            
           </div>
           
         </div>

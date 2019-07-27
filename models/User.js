@@ -54,8 +54,29 @@ const User = db.define('user', {
     org_name: {
         type: Sequelize.STRING
     },
+    org_ic: {
+        type: Sequelize.STRING
+    },
+    org_type: {
+        type: Sequelize.STRING
+    },
+    org_size: {
+        type: Sequelize.STRING
+    },
     org_rating: {
         type: Sequelize.STRING
+    },
+    org_location: {
+        type: Sequelize.STRING
+    },
+    org_phone: {
+        type: Sequelize.STRING
+    },
+    org_website: {
+        type: Sequelize.STRING
+    },
+    is_org: {
+        type: Sequelize.BOOLEAN
     },
     products: {
         type: Sequelize.STRING

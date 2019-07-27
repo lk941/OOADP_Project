@@ -9,6 +9,14 @@ const Product = require('../models/Product');
 const paypal = require('paypal-rest-sdk'); // npm i paypal-rest-sdk
 const MapboxClient = require('mapbox'); 
 const client = new MapboxClient('pk.eyJ1IjoiY2Vld2FpIiwiYSI6ImNqbng3eDcyZDByeXgzcHBnY2w0cGloM2sifQ.NsvAT34SplBxuUvZsvUSKA');
+const dialcodes = require('dialcodes');  // npm i dialcodes
+// const SendOtp = require('sendotp'); // npm install sendotp --save
+// const sendOtp = new SendOtp('2926AawNJ9tkj5d3bde76');
+const Nexmo = require('nexmo'); //npm install --save nexmo express body-parser ejs
+const nexmo = new Nexmo({
+  apiKey: '07ec6777',
+  apiSecret: 'aCkARCcv0Hm18Ox5'
+});
 
 paypal.configure({
   'mode': 'sandbox', //sandbox or live
@@ -193,61 +201,64 @@ router.get('/', (req, res) => {
 			},
 			raw: true,
 		}).then((order) => {
-			ret_product = [];
+			ret_goods = [];
+			ret_services = [];
+			home = req.user.country + ' ' + req.user.address + ' ' + req.user.postalCode;
 			Promise.all(order.map(element => {
 				return Product.findOne({
 					where: {
 						id: element.productId,
 					}
 				}).then((product) => {
-					
-					// let coords = [];
-
-					let coords = client.geocodeForward(element.destination, { limit: 1 }, ((err, res) => {
-						return queryCoords = res.features[0].geometry.coordinates;
-					}));
-
-					// console.log(coords);
-
-					// let coords = client.geocodeForward(element.destination);
-					// // 	.then(function(res) {
-					// // 		// res is the http response, including: status, headers and entity properties
-					// // 		var data = res.features[0].geometry.coordinates; // data is the geocoding result as parsed JSON
-					// // 		console.log(data);
-					// // 	})
-					// // 	.catch(function(err) {
-					// // 		// handle errors
-					// // 		console.log(Error(err));
-					// // });
-					// console.log(coords);
-					
-
-					let the_product = {
-						id: product.id,
-						orgId: product.orgId,
-						name: product.name,
-						product_type: product.product_type,
-						description: product.description,
-						publishDate: product.publishDate,
-						cost: product.cost,
-						origin: product.origin,
-						deliveryfee: product.delivery,
-						images: product.images,
-						ratings: product.ratings,
-						comments: product.comments,
-						status: element.status,
-						location: element.location,
-						destination: element.destination,
+					if (product.product_type === "Goods") {
+						let the_product = {
+							id: element.id,
+							orgId: product.orgId,
+							name: product.name,
+							product_type: product.product_type,
+							description: product.description,
+							publishDate: product.publishDate,
+							cost: product.cost,
+							origin: product.origin,
+							deliveryfee: product.delivery,
+							images: product.images,
+							ratings: product.ratings,
+							comments: product.comments,
+							status: element.status,
+							location: element.location,
+							destination: element.destination,
+						}
+						//console.log(the_product);
+						ret_goods.push(the_product);
+					} else {
+						let the_product = {
+							id: element.id,
+							orgId: product.orgId,
+							name: product.name,
+							product_type: product.product_type,
+							description: product.description,
+							publishDate: product.publishDate,
+							cost: product.cost,
+							origin: product.origin,
+							deliveryfee: product.delivery,
+							images: product.images,
+							ratings: product.ratings,
+							comments: product.comments,
+							status: element.status,
+							location: element.location,
+							destination: element.destination,
+						}
+						//console.log(the_product);
+						ret_services.push(the_product);
 					}
-					//console.log(the_product);
-					ret_product.push(the_product);
-					//console.log('This is the ret_product ' + ret_product);
 				})
 			})).then(() => {
 				//console.log("The products: " + ret_product);
 				res.render('index', {
 					user: req.user,
-					product: ret_product,
+					goods: ret_goods,
+					service: ret_services,
+					home,
 				});
 			})
 		})
@@ -295,7 +306,7 @@ router.get('/showDashboard', isLoggedIn, (req, res) => {
 				console.log(product.product_type);
 				if (product.product_type === "Goods") {
 					let the_product = {
-						id: product.id,
+						id: element.id,
 						orgId: product.orgId,
 						name: product.name,
 						product_type: product.product_type,
@@ -308,6 +319,7 @@ router.get('/showDashboard', isLoggedIn, (req, res) => {
 						ratings: product.ratings,
 						comments: product.comments,
 						status: element.status,
+						destination: element.destination,
 					}
 					ret_product.push(the_product)
 				}
@@ -399,9 +411,11 @@ router.put('/saveEditedProfile/:id', isLoggedIn, (req, res) => {
 	let country = req.body.countrySelect;
 	let unitNo = req.body.unitNo;
 	let postalCode = req.body.postalCode;
-	let phoneNo = req.body.phoneNo;
+	let justphoneNo = req.body.phoneNo;
 	let gender = req.body.gender.toString();
 	let dob = req.body.dobUk;
+	let dialingCode = dialcodes.getDialingCode(country); // find country dialing code
+	let phoneNo = dialingCode + " " + justphoneNo;
 
 	User.findOne({
         where: {
@@ -432,12 +446,67 @@ router.get('/showEditProfile/:id', isLoggedIn, (req, res) => {
             id: req.user.id
         }
     }).then((user) => {
-		checkOptions(user)
+		checkOptions(user);
+
+		if (user.phoneNo != undefined) {
+			let no = user.phoneNo.split(' ');
+			user.phoneNo = no[1];
+		}
+		
         res.render('user/editProfile', {
             user
         });
     }).catch(err => console.log(err));
 })
+
+// Become an organization
+router.get("/orgSignup", isLoggedIn, (req, res) => {
+	User.findOne({
+		where: {
+			id: req.user.id
+		}
+	}).then((user) => {
+		area = user.country + ' ' + user.address + ' ' + user.unitNo + ' ' + user.postalCode
+
+		res.render("user/orgSignup", {
+			user,
+			area,
+		});
+	})
+});
+
+router.post("/orgSignup", isLoggedIn, (req, res) => {
+	let org_ic = req.body.org_ic;
+	let org_type = req.body.org_type;
+	let org_size = req.body.radio;
+	let org_name = req.body.org_name;
+	let org_location = req.body.org_location;
+	let org_id = org_name.toUpperCase() + org_ic;
+	let org_phone = req.body.org_phone;
+	let org_website = req.body.org_website;
+	let is_org = true;
+
+
+	User.findOne({
+		where: {
+			id: req.user.id
+		}
+	}).then((user) => {
+		user.update({
+			org_id,
+			org_ic,
+			org_type,
+			org_size,
+			org_name,
+			org_location,
+			org_phone,
+			org_website,
+			is_org
+		})
+	}).then(() => {
+		res.redirect('/showDashboard');
+	})
+});
 
 function checkOptions(user) {
 	let g = user.gender
@@ -451,20 +520,6 @@ function checkOptions(user) {
 		user.female = 'checked';
 	} 
 }
-
-// Login Form POST => /user/login
-/*
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', {
-        successRedirect: '/video/listVideos',
-        failureRedirect: '/showLogin',  // Route to /login URL
-        failureFlash: true,
-
-    })(req, res, next);
-
-});
-*/
-
 
 // About
 router.get('/about', (req,res) => {
@@ -497,8 +552,77 @@ router.get("/joinService", (req, res) => {
 	})
 });
 
+// Manage Orders
+router.get("/manageOrder", isLoggedIn, (req, res) => {
+	res.render('user/manageOrder', {})
+})
 
+// Send OTP
+router.get("/perInfo", isLoggedIn, (req, res) => {
+	let user = req.user;
 
+	if (req.user.phoneNo != undefined) {  // fill out personal information
+		let no = user.phoneNo.split(' ');
+		user.phoneNo = no[0] + no[1];
+		
+		res.render('user/perInfo', {
+			user,
+		})
+	} else {
+		alertMessage(res, 'info', 'Please fill out your information.', 'fas fa-exclamation-circle', true);
+		res.redirect('/showEditProfile/' + req.user.id);
+	}
+	
+})
+
+router.post("/perInfo", isLoggedIn, (req, res) => {
+	let phoneNumber = req.body.number;
+	console.log('Phone number is: ' + phoneNumber);
+	nexmo.verify.request({number: phoneNumber, brand: 'Likey'}, (err, result) => {
+	  if(err) {
+		res.sendStatus(500);
+	  } else {
+		let requestId = result.request_id;
+		if(result.status == '0') {
+		  res.render('user/verify', {requestId: requestId}); // Success! Now, have your user enter the PIN
+		} else {
+		  res.status(401).send(result.error_text);
+		}
+	  }
+	});
+})
+
+router.get("/perInfoVerify", isLoggedIn, (req, res) => {
+	
+	res.render('user/verify', {})
+	
+})
+
+router.post('/verify', (req, res) => {
+	let pin = req.body.pin;
+	let requestId = req.body.requestId;
+	console.log(pin);
+	console.log(requestId);
+   
+	nexmo.verify.check({request_id: requestId, code: pin}, (err, result) => {
+	  if(err) {
+		// handle the error
+		res.send('Error');
+		console.log(err);
+	  } else {
+		if(result && result.status == '0') { // Success!
+		  res.redirect('/orgSignup');
+		} else {
+		  // handle the error - e.g. wrong PIN
+		  console.log(result);
+		  console.log(result.status);
+		  console.log("Wrong PIN");
+		  alertMessage(res, 'info', 'Wrong PIN', 'fas fa-exclamation-circle', true);
+		  
+		}
+	  }
+	});
+  });
 
 function isLoggedIn(req, res, next) {
 	if(req.isAuthenticated()){

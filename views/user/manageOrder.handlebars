@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/manageOrder.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container" style="margin-left: 0;">
+    <div class="customer_details orderList">
+      <div class="orderTop">
+        <h2 class="hidden-xs">Manage Orders</h2>
+        <div class="search-container">
+        </div>
+      </div>
+      <div class="order_tab">
+        <ul class="tabs">
+          <li class="tab-link current" data-tab="order_tab">All</li>
+          <li class="tab-link" data-tab="buy_again">Pending</li>
+          <li class="tab-link" data-tab="open_orders">Delivering</li>
+          <li class="tab-link" data-tab="cancelled_orders">Cancelled</li>
+        </ul>
+      </div>
+    </div>
+    <div id="order_tab" class="orderCardWrap tab-content1 current" style="margin-bottom: 1.5%;">
+      <div class="orderCard">
+        <div class="orderHead">
+          <ul class="orderLeft">
+            <li>
+              <p>ORDER PLACED <span>12 March 2019</span></p>
+            </li>
+            <li>
+              <p>TOTAL <span>$735.00</span></p>
+            </li>
+            <li>
+              <p>SHIP TO <span class="customerName">Customer Name</span>
+                <span class="cstmrInfo">
+                          <strong>Customer Name</strong> Lorem Ipsum is simply dummy text
+                        </span>
+              </p>
+
+            </li>
+          </ul>
+          <div class="invoiceDetails">
+            <p style="margin-bottom:0;">ORDER # 171-8448362-6456308 </p><a href="#" >Order Details</a>
+          </div>
+        </div>
+      </div>
+      <div style="border: 1px solid #ccc;"  class="itemDetails">
+        <h3>Delivered 16-Mar-2019</h3>
+        <p>Singapore Ang Mo Kio Avenue 5</p>
+        <p>560522 #12-4198</p>
+        <div class="itemInfo">
+          <div class="itemImg">
+            <img style="margin-top:11%;" src="https://www.thetimes.co.uk/imageserver/image/methode%2Ftimes%2Fprod%2Fweb%2Fbin%2Fde47d6b2-8690-11e7-9f10-c918952dd8f2.jpg?crop=1500%2C1000%2C-0%2C-0" alt="">
+          </div>
+          <div class="itemDesc">
+            <h4>Carl Friedrik Palissy Briefcase</h4>
+            <p>Sold by: <span>Carl Friedrik</span></p>
+            <p>Quantity: 1</p>
+            <span class="itemPrice">$735.00</span>
+            <button class="buy_again">Buy it again</button>
+          </div>
+        </div>
+        <div class="btn_group">
+          <button class="buy_again">Update Delivery Status</button>
+          <button class="gift_btn">Contact User</button>
+          <button id="rej_order" class="gift_btn">Cancel Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="buy_again" class="orderCardWrap tab-content1">
+    Lorem2
+  </div>
+  <div id="open_orders" class="orderCardWrap tab-content1">
+    Lorem1
+  </div>
+  <div id="cancelled_orders" class="orderCardWrap tab-content1">
+    <div class="orderCard">
+      <div class="orderHead">
+        <ul class="orderLeft">
+          <li>
+            <p>ORDER PLACED <span>12 March 2019</span></p>
+          </li>
+          <li>
+            <p>TOTAL <span>$413.00</span></p>
+          </li>
+          <li>
+            <p>SHIP TO <span class="customerName">Customer Name</span>
+              <span class="cstmrInfo">
+                          <strong>Customer Name</strong> Lorem Ipsum is simply dummy text
+                        </span>
+            </p>
+          </li>
+        </ul>
+        <div class="invoiceDetails">
+          <p>ORDER # 171-8448362-6456308</p>
+        </div>
+      </div>
+      <div class="itemDetails">
+        <h3>Delivered 16-Mar-2019</h3>
+        <p>Package was handed to a receptionist</p>
+        <p>Signed by: Priti.</p>
+        <div class="itemInfo">
+          <div class="itemImg">
+            <img src="images/product1.jpg" alt="">
+          </div>
+          <div class="itemDesc">
+            <h4>Pigeon Stainless Steel Swig Water Bottle 750ml (Set of 2)</h4>
+            <p>Sold by: <span>E-Emporium</span></p>
+            <span class="itemPrice">$0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</body>
+
+<script>
+jQuery(".order_tab ul.tabs li").click(function() {
+    var tab_id = jQuery(this).attr("data-tab");
+
+    jQuery(".order_tab ul.tabs li").removeClass("current");
+    jQuery(".tab-content1").removeClass("current");
+
+    jQuery(this).addClass("current");
+    jQuery("#" + tab_id).addClass("current");
+});
+
+</script>
+
+</html>

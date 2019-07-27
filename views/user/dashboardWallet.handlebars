@@ -1,6 +1,7 @@
-<link type="text/css" rel="stylesheet" href="css/dashboardWishlist.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{{!-- <link type="text/css" rel="stylesheet" href="css/dashboardWishlist.css"> --}}
+<link rel="stylesheet" href="css/dashboard.css">
+{{!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> --}}
+{{!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> --}}
 <!-- Compiled and minified CSS -->
 <div class="row">
   <div id="content" class="col s10 offset-s2">
@@ -18,8 +19,12 @@
           <div class="profile_header">
             <img src="{{user.photoURL}}" alt="profile_picture" />
             <h2>{{user.name}}</h2>
-            <p>{{checkUserType user.user_type}}</p>
-            {{#ifEqual user.user_type "Organization"}}
+            {{#if user.is_org}}
+              <p>Organization</p>
+            {{else}}
+              <p>{{checkUserType user.user_type}}</p>
+            {{/if}}
+            {{#if user.is_org}}
               <ul style="list-style: none;">
                 <li>
                 <i class="fa fa-star"></i>
@@ -32,12 +37,12 @@
                   <p class="stats"><i class="fa fa-fire"></i> 128</p>
                 </li>
               </ul>
-            {{/ifEqual}}
+            {{/if}}
           </div>
           <div class="divider"></div>
           
           <div class="profile_information">
-            <h3 style="margin-top: 5px;" >Contact Information</h3>
+            <h3 style="margin-top: 5px;" >Personal Information</h3>
             <ul style="list-style: none;">
               <li>
                 <h4>Email Address:</h4>
@@ -63,21 +68,41 @@
           </div>
           
           <div class="divider"></div>
-          {{#ifEqual user.user_type "Organization"}}
+          {{#if user.is_org}}
             <div class="profile_custom">
               <h3 style="margin-top: 5px;">Organization Information</h3>
               <ul>
                 <li>
-                  <h4>Website:</h4>
-                  <p>ORGANIZATIONWEBSITE.COM</p>
+                  <h4>Organization Name:</h4>
+                  <p>{{user.org_name}}</p>
                 </li>
                 <li>
-                  <h4>Website Phone Number:</h4>
-                  <p>1800-LMAO-FAM-NOT-DONE-WITH-ORGANIZATION-PROFILE-YET</p>
+                  <h4>Website:</h4>
+                  <p>{{user.org_website}}</p>
+                </li>
+                <li>
+                  <h4>Organization Phone Number:</h4>
+                  <p>{{user.org_phone}}</p>
+                </li>
+                <li>
+                  <h4>Organization Location:</h4>
+                  <p>{{user.org_location}}</p>
+                </li>
+                <li>
+                  <h4>Organization Size:</h4>
+                  {{#ifEqual user.org_size "individual"}}
+                    <p>Individual</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "sme"}}
+                    <p>Small Medium Enterprise</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "mnc"}}
+                    <p>Multinational Corporation</p>
+                  {{/ifEqual}}
                 </li>
               </ul>
             </div>
-        {{/ifEqual}}
+        {{/if}}
         </div>
         <div id="profile_content" class="col s8">
           <nav id="dashboardNav">
@@ -108,40 +133,36 @@
         </div>
             
           </nav>
-          
-          <div class="profile-content">
-            <div class="wallet-container text-center">
-            <div class="amount-box text-center">
-              <img src="https://lh3.googleusercontent.com/ohLHGNvMvQjOcmRpL4rjS3YQlcpO0D_80jJpJ-QA7-fQln9p3n7BAnqu3mxQ6kI4Sw" alt="wallet">
-              <p>Total Balance</p>
-              <p class="amount">${{user.wallet}}</p>
-            </div>
 
-            <div class="btn-group text-center">
-              <form action="/pay/1" method="post">
-                <input type="submit" class="btn" value="Add $10 Coins">
-              </form>
-            </div>
+          <div class="profile-content" style="min-height: 93.75%;">
+            <div class="wallet-container text-center" style="top: 50%;">
+              <div class="amount-box text-center">
+                <i class="fas fa-wallet"></i>
+                <p>Total Balance</p>
+                <p class="amount">${{user.wallet}}</p>
+              </div>
 
-            <div class="btn-group text-center">
-              <form action="/pay/2" method="post">
-                <input type="submit" class="btn" value="Add $25 Coins">
-              </form>
-            </div>
+              <div class="btn-group text-center">
+                <form action="/pay/1" method="post">
+                  <input type="submit" class="btn" value="Add $10 Coins">
+                </form>
+              </div>
 
-            <div class="btn-group text-center">
-              <form action="/pay/3" method="post">
-                <input type="submit" class="btn" value="Add $50 Coins">
-              </form>
+              <div class="btn-group text-center">
+                <form action="/pay/2" method="post">
+                  <input type="submit" class="btn" value="Add $25 Coins">
+                </form>
+              </div>
+
+              <div class="btn-group text-center">
+                <form action="/pay/3" method="post">
+                  <input type="submit" class="btn" value="Add $50 Coins">
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-
-          </div>
-          
-        </div>
+        </div> 
+      </div>
     </div><!-- .row profile -->
-
-  </div><!-- .s9 content -->
-    
+  </div><!-- .s9 content --> 
 </div><!-- .row -->

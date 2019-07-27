@@ -10,16 +10,6 @@
 <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
 <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
 
-<!--
-<div class="jumbotron text-center">
-	<div class="container">
-		<h1 class="display-4">{{title}}</h1>
-		<p class="lead">lmao fam u tot</p>
-	</div>
-	<br>
-</div>
--->
-
 <style>
  
 .marker {
@@ -147,9 +137,7 @@ map.on('load', function() {
         .setText('Placeholder');
 
   {{#if user}}
-    {{#each product}}
-    //console.log(product);
-      //console.log({{order}});
+    {{#each goods}}
 
       var queryCoords = [];
       var markers = 0;
@@ -170,9 +158,8 @@ map.on('load', function() {
             .addTo(map);
 
             markers.className = 'marker';
-            //markers.style.backgroundImage = 'url({{images}})';
 
-              markers.on('click', function(e) {
+              markers.on('mouseover', function(e) {
                 // Force close the popup.
                 e.layer.closePopup();
 
@@ -196,6 +183,66 @@ map.on('load', function() {
                   console.log('Destination is ', destCoords, " at " + '{{destination}}');
                   var destination{{id}} = [destCoords[0], destCoords[1]];
               
+                  map.addLayer({
+                  "id": "destPlace{{id}}",
+                  "type": "symbol",
+                  "source": {
+                    "type": "geojson",
+                    "data": {
+                      "type": "FeatureCollection",
+                      "features": [{
+                        "type": "Feature",
+                        "properties": {
+                          "description": "<strong>Destination</strong><p>{{destination}}</p>",
+                          "icon": "theatre"
+                        },
+                        "geometry": {
+                          "type": "Point",
+                          "coordinates": [destCoords[0], destCoords[1]]
+                        }
+                      }]
+                    }
+                  },
+                  "layout": {
+                    "icon-image": "embassy-15",
+                    "icon-allow-overlap": true
+                  }
+                });
+
+                  // Add a layer showing the places.
+                  // Create a popup, but don't add it to the map yet.
+                  let popupDest = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                  });
+                  
+                  map.on('mouseenter', 'destPlace{{id}}', function(e) {
+                    // Change the cursor style as a UI indicator.
+                    map.getCanvas().style.cursor = 'pointer';
+                    
+                    var coordinates = e.features[0].geometry.coordinates.slice();
+                    var description = e.features[0].properties.description;
+                    
+                    // Ensure that if the map is zoomed out such that multiple
+                    // copies of the feature are visible, the popup appears
+                    // over the copy being pointed to.
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+                    
+                    // Populate the popup and set its coordinates
+                    // based on the feature found.
+                    popupDest.setLngLat(coordinates)
+                      .setHTML(description)
+                      .addTo(map);
+                    });
+                  
+                    map.on('mouseleave', 'destPlace{{id}}', function() {
+                      map.getCanvas().style.cursor = '';
+                      popupDest.remove();
+                    });  
+                
+
                   // A simple line from origin to destination.
                   var route{{id}} = {
                     "type": "FeatureCollection",
@@ -233,7 +280,7 @@ map.on('load', function() {
                   // Number of steps to use in the arc and animation, more steps means
                   // a smoother arc and animation, but too many steps will result in a
                   // low frame rate
-                  var steps = 500;
+                  var steps = 5000;
                   
                   // Draw an arc between the `origin` & `destination` of the two points
                   for (var i = 0; i < lineDistance; i += lineDistance / steps) {
@@ -259,28 +306,28 @@ map.on('load', function() {
                       "data": point{{id}}
                     });
                     
-                    map.addLayer({
-                      "id": "route{{id}}",
-                      "source": "route{{id}}",
-                      "type": "line",
-                      "paint": {
-                        "line-width": 2,
-                        "line-color": "#007cbf"
-                      }
-                    });
-                    
-                    map.addLayer({
-                      "id": "point{{id}}",
-                      "source": "point{{id}}",
-                      "type": "symbol",
-                      "layout": {
-                        "icon-image": "airport-15",
-                        "icon-rotate": ["get", "bearing"],
-                        "icon-rotation-alignment": "map",
-                        "icon-allow-overlap": true,
-                        "icon-ignore-placement": true
-                      }
-                    });
+                      map.addLayer({
+                        "id": "route{{id}}",
+                        "source": "route{{id}}",
+                        "type": "line",
+                        "paint": {
+                          "line-width": 2,
+                          "line-color": "#007cbf"
+                        }
+                      });
+                      
+                      map.addLayer({
+                        "id": "point{{id}}",
+                        "source": "point{{id}}",
+                        "type": "symbol",
+                        "layout": {
+                          "icon-image": "airport-15",
+                          "icon-rotate": ["get", "bearing"],
+                          "icon-rotation-alignment": "map",
+                          "icon-allow-overlap": true,
+                          "icon-ignore-placement": true
+                        }
+                      });
                     
                     function animate() {
                       // Update point geometry to a new position based on counter denoting
@@ -290,72 +337,79 @@ map.on('load', function() {
                       // Calculate the bearing to ensure the icon is rotated to match the route arc
                       // The bearing is calculate between the current point and the next point, except
                       // at the end of the arc use the previous point and the current point
-                      point{{id}}.features[0].properties.bearing = turf.bearing(
+                      try {
+                        point{{id}}.features[0].properties.bearing = turf.bearing(
                         turf.point(route{{id}}.features[0].geometry.coordinates[counter >= steps ? counter - 1 : counter]),
                         turf.point(route{{id}}.features[0].geometry.coordinates[counter >= steps ? counter : counter + 1])
-                      );
-                        
+                        );
+                      } catch {
+                        console.log(route{{id}}.features[0].geometry.coordinates[counter >= steps ? counter - 0.5 : counter]);
+                        console.log(route{{id}}.features[0].geometry.coordinates[counter >= steps ? counter : counter + 0.5]);
+                      }
+                      
                       // Update the source with this new data.
                       map.getSource('point{{id}}').setData(point{{id}});
-                        
                         // Request the next frame of animation so long the end has not been reached.
                         if (counter < steps) {
                           requestAnimationFrame(animate);
+                        } else {
+                          // Set the coordinates of the original point back to origin
+                          point{{id}}.features[0].geometry.coordinates = origin{{id}};
+                          // Update the source layer
+                          map.getSource('point{{id}}').setData(point{{id}});
+                          // Reset the counter
+                          counter = 0;
+                          // Restart the animation.
+                          animate(counter);
                         }
                         counter = counter + 1;
                     }
 
-                  /*
-                      document.getElementById('replay').addEventListener('click', function() {
-                        // Set the coordinates of the original point back to origin
-                        point.features[0].geometry.coordinates = origin;
-                        // Update the source layer
-                        map.getSource('point').setData(point);
-                        // Reset the counter
-                        counter = 0;
-                        // Restart the animation.
-                        animate(counter);
-                      });
-                      */
-                  
-
                     // Start the animation.
-                    animate(counter);
-
+                      animate(counter);
               });
             
+            
       });
+  {{/each}}
+  {{#each service}}
+    mapboxClient.geocodeForward("{{location}}", { limit: 1 }, function(err, res) {
+          var el = document.createElement('div');
+          el.className = 'marker';
+          el.style.backgroundImage = 'url({{images}})';
 
+          queryCoords = res.features[0].geometry.coordinates;
+
+          console.log(queryCoords[0],queryCoords[1]);
+          // create the marker
+      
+          markers = new mapboxgl.Marker(el)
+            .setLngLat([queryCoords[0], queryCoords[1]])
+            .setPopup(new mapboxgl.Popup({offset: 25}) // sets a popup on this marker
+              	.setHTML('<h3>' + "{{name}}" + '</h3><p>' + '{{description}}' + '</p>' + '<a href="">' + 'Track' + '</a>'))
+            .addTo(map);
+
+            markers.className = 'marker';
+
+              markers.on('mouseover', function(e) {
+                // Force close the popup.
+                e.layer.closePopup();
+
+                var feature = e.layer.feature;
+                var title = feature.properties.title;
+                var content = feature.properties.description;
+                var latlng = feature.geometry.coordinates;
+
+                // Modal Content
+                $("#marker_title").text(title);
+                $("#marker_content").text(content);
+                $("#marker_latlng").text(formatLatLng(latlng));
+
+                $('#exampleModal').modal('show');
+              });
+    });
   {{/each}}
 {{/if}}
-
-
-  // Insert the layer beneath any symbol layer.
-  // create the marker
-var markers = new mapboxgl.Marker(el)
-  .setLngLat([103.81654, 1.3209084])
-  .setPopup(popup) // sets a popup on this marker
-  .addTo(map);
-
-// Listener for marker click
-  
-  markers.on('click', function(e) {
-    // Force close the popup.
-    e.layer.closePopup();
-
-    var feature = e.layer.feature;
-    var title = feature.properties.title;
-    var content = feature.properties.description;
-    var latlng = feature.geometry.coordinates;
-
-    // Modal Content
-    $("#marker_title").text(title);
-    $("#marker_content").text(content);
-    $("#marker_latlng").text(formatLatLng(latlng));
-
-    $('#exampleModal').modal('show');
-});
-
 
 
 	var layers = map.getStyle().layers;
@@ -368,7 +422,6 @@ var markers = new mapboxgl.Marker(el)
 		}
 	}
 	
-
 	map.addLayer({
 		'id': '3d-buildings',
 		'source': 'composite',
@@ -396,7 +449,10 @@ var markers = new mapboxgl.Marker(el)
 			'fill-extrusion-opacity': .6
 		}
 	}, labelLayerId);
+
+
 /*
+// ONE POINT ANIMATION ONLY //
         // Point 1
         map.addSource('point1', {
           "type": "geojson",

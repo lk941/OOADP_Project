@@ -1,4 +1,6 @@
 <link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/modalDashboard.css">
+
   <!-- Compiled and minified CSS -->
 <div class="row">
   <div id="content" class="col s10 offset-s2">
@@ -16,8 +18,12 @@
           <div class="profile_header">
             <img src="{{user.photoURL}}" alt="profile_picture" />
             <h2>{{user.name}}</h2>
-            <p>{{checkUserType user.user_type}}</p>
-            {{#ifEqual user.user_type "Organization"}}
+            {{#if user.is_org}}
+              <p>Organization</p>
+            {{else}}
+              <p>{{checkUserType user.user_type}}</p>
+            {{/if}}
+            {{#if user.is_org}}
               <ul style="list-style: none;">
                 <li>
                 <i class="fa fa-star"></i>
@@ -30,12 +36,12 @@
                   <p class="stats"><i class="fa fa-fire"></i> 128</p>
                 </li>
               </ul>
-            {{/ifEqual}}
+            {{/if}}
           </div>
           <div class="divider"></div>
           
           <div class="profile_information">
-            <h3 style="margin-top: 5px;" >Contact Information</h3>
+            <h3 style="margin-top: 5px;" >Personal Information</h3>
             <ul style="list-style: none;">
               <li>
                 <h4>Email Address:</h4>
@@ -61,21 +67,41 @@
           </div>
           
           <div class="divider"></div>
-          {{#ifEqual user.user_type "Organization"}}
+          {{#if user.is_org}}
             <div class="profile_custom">
               <h3 style="margin-top: 5px;">Organization Information</h3>
               <ul>
                 <li>
-                  <h4>Website:</h4>
-                  <p>ORGANIZATIONWEBSITE.COM</p>
+                  <h4>Organization Name:</h4>
+                  <p>{{user.org_name}}</p>
                 </li>
                 <li>
-                  <h4>Website Phone Number:</h4>
-                  <p>1800-LMAO-FAM-NOT-DONE-WITH-ORGANIZATION-PROFILE-YET</p>
+                  <h4>Website:</h4>
+                  <p>{{user.org_website}}</p>
+                </li>
+                <li>
+                  <h4>Organization Phone Number:</h4>
+                  <p>{{user.org_phone}}</p>
+                </li>
+                <li>
+                  <h4>Organization Location:</h4>
+                  <p>{{user.org_location}}</p>
+                </li>
+                <li>
+                  <h4>Organization Size:</h4>
+                  {{#ifEqual user.org_size "individual"}}
+                    <p>Individual</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "sme"}}
+                    <p>Small Medium Enterprise</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "mnc"}}
+                    <p>Multinational Corporation</p>
+                  {{/ifEqual}}
                 </li>
               </ul>
             </div>
-        {{/ifEqual}}
+        {{/if}}
         </div>
         <div id="profile_content" class="col s8">
           <nav id="dashboardNav">
@@ -126,71 +152,109 @@
                   </div>
                   <ul class="actions clear">
                     <li>
-                      <a style="color: white;" href="/" class="product_anchor">product details</a>
+                      <a id='modalBttn{{id}}' class="product_anchor" data-toggle="modal" data-target="#myModal{{id}}">
+                        Track Order
+                      </a>
                     </li>
                     <li>
-                      <a style="color: white;" href="/" class="product_anchor">Visit Shop</a>
+                      <a style="color: white;" href="/" class="product_anchor">Order Details</a>
                     </li>
                   </ul>
                 </div>
               </div>
+                          
+              <!-- Modal -->
+              <div class="modal fade" data-backdrop="false" id="myModal{{id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title" id="myModalLabel">Track Order <a>#{{id}}</p></h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                    </div>
+                    <div class="modal-body">
+                      <div class="outer">
+                        <div id='progress{{id}}' class="progress dark" style="padding-left:20%;">
+                        <div class="left" style="width: 75%;">
+                          <div class="1id{{id}}">{{origin}}</div>
+                          <div class="2id{{id}}">{{destination}}</div>
+                          <div class="3id{{id}}">{{destination}}</div>
+                        </div>
+                        <div class="right">
+                          <div id="1id{{id}}" class="1id{{id}} current"><i class="fas fa-industry"></i> PENDING</div>
+                          <div id="2id{{id}}" class="2id{{id}}"><i class="fas fa-plane"></i> DELIVERING</div>
+                          <div id="3id{{id}}" class="3id{{id}} done"><i class="fas fa-home"></i> DELIVERED</div>
+                        </div>
+                      </div>  
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" style="color:white;" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             {{/each}}
+            {{else}}
+            <div class="row" style="text-align: center; font-size:60px;">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <i class="fas fa-store"></i>
+                <p style="font-size:20px;">Order something!</p>
+              </div>
+            </div>
+
           {{/if}}
-            <div class="row">
-              <div class='product-card'>
-                <div class="product-image">
-                  <img src="https://cdn.gearpatrol.com/wp-content/uploads/2018/07/Herschel-Supply-Co-Pop-Quiz-gear-patrol-full-lead.jpg" />
-                </div>
-                <div class="inner">
-                  <h2 class="title">Herschel Pop Quiz Bag</h2>
-                  <h2 id="product_price">$79.00</h2>
-                  <p>DELIVERED</p>
-                  <dl>
-                    <dt>Product Highlights</dt>
-                    <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
-                    <dd>Nam quis eros leo. Donec pharetra fermentum tellus eu semper.</dd>
-                  </dl>
-                </div>
-                <ul class="actions clear">
-                  <li>
-                    <a class="product_anchor">product details</a>
-                  </li>
-                  <li>
-                    <a class="product_anchor">Visit Shop</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="row">
-              <div class='product-card'>
-                <div class="product-image">
-                  <img src="https://d4kkpd69xt9l7.cloudfront.net/sys-master/root/h84/h9a/8924595060766/razer-blackwidow-chroma-te-chroma-v2-quartz-gallery-02.jpg" />
-                </div>
-                <div class="inner">
-                  <h2 class="title">Razer Blackwidow Chroma Tournament Edition [Quartz Pink]</h2>
-                  <h2 id="product_price">$69.00</h2>
-                  <p>DELIVERED</p>
-                  <dl>
-                    <dt>Product Highlights</dt>
-                    <dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</dd>
-                    <dd>Nam quis eros leo. Donec pharetra fermentum tellus eu semper.</dd>
-                  </dl>
-                </div>
-                <ul class="actions clear">
-                  <li>
-                    <a class="product_anchor">product details</a>
-                  </li>
-                  <li>
-                    <a class="product_anchor">Visit Shop</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
-          
         </div>
     </div><!-- .row profile -->
 
   </div><!-- .s9 content -->
     
 </div><!-- .row -->
+
+<script>
+
+// Test code
+
+{{#each product}}
+$('#modalBttn{{id}}').click(() => {
+    $('#progress{{id}}').each((_, progress) => {
+    
+    const steps = $('> div.right > div', progress{{id}});
+
+      $(document).ready(function() {
+        steps.removeClass(['current', 'prev']);
+        $('#1id{{id}}').addClass(
+          {{#ifEqual status 'PENDING'}}
+            ['current']
+          {{/ifEqual}}
+          );
+
+        $('#2id{{id}}').addClass(
+          {{#ifEqual status 'DELIVERING'}}
+            ['current']
+          {{/ifEqual}}
+          );
+          
+        $('#3id{{id}}').addClass(
+          {{#ifEqual status 'DELIVERED'}}
+            ['current']
+          {{/ifEqual}}
+          );
+
+      });
+
+
+  })
+});
+
+$('#myModal{{id}}').on('hidden.bs.modal', function () {
+  const steps = $('> div.right > div', progress{{id}});
+
+  steps.removeClass(['current', 'prev']);
+  $('#1id{{id}}').addClass(['current']);
+})
+{{/each}}
+
+</script>

@@ -88,9 +88,11 @@ router.post('/register', (req, res) => {
             photoURL, 
             wallet,
             verified: 0,
+            is_org: 0,
          }).then(user => {
             sendEmail(user.id, user.email, token)   // Add this to call sendEmail function
                 .then(msg => {
+                    console.log('Email Sent');
                     alertMessage(res, 'success', user.name + ' added. Please logon to ' + user.email + ' to verify account.', 'fas fa-sign-in-alt', true);
                     res.redirect('/showLogin');
                 }).catch(err => { // Send email fail
@@ -98,8 +100,8 @@ router.post('/register', (req, res) => {
                     alertMessage(res, 'warning', 'Error sending to '+ user.email,  'fas fa-sign-in-alt', true); 
                     res.redirect('/showLogin');
                 });
-        }).catch(err => console.log(err));
-    });
+            }).catch(err => console.log(err));
+        });
             }
         });
     
@@ -129,11 +131,7 @@ router.post('/login', (req, res, next) => {
     });
 
 function sendEmail(userId, email, token){ 
-    //sgMail.setApiKey('SG.TnaxWSoBRaK1Y8Nx4Ny8fg.9R7TT_1enZHauVKGa4t3_uBe149cu-Qd2UaAo-3VW6IS'); 
-    //Vid Jot's APIKEY
-    sgMail.setApiKey('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'); 
-    //SENDGRID_APY_KEY = 'SG.TnaxWSoBRaK1Y8Nx4Ny8fg.9R7TT_1enZHauVKGa4t3_uBe149cu-Qd2UaAo-3VW6IS';
-    //sgMail.setApiKey(process.env.SENDGRID_APY_KEY);
+    sgMail.setApiKey('<PUT YOUR API KEY HERE>'); 
     const message = {
         to: email,
         from: 'Do Not Reply <admin@likey.sg>',
@@ -141,7 +139,7 @@ function sendEmail(userId, email, token){
         text: 'Likey Email Verification',         
         html: `Thank you registering with Likey.<br><br>                
                 Please <a href="https://localhost:5000/user/verify/${userId}/${token}"> 
-                <strong>verify</strong></a>your account.`
+                <strong>verify</strong></a> your account.`
             }; 
             // Returns the promise from SendGrid to the calling function
     return new Promise((resolve, reject) => { 
@@ -224,25 +222,25 @@ router.get('/twitter/callback', passport.authenticate('twitter', {
 
 // Upload poster
 router.post('/upload', isLoggedIn, (req, res) =>{
-        // alert("working");
-        // Creates user id directory for upload if not exist
-        if(!fs.existsSync('./public/uploads/'+req.user.id)){
-            fs.mkdirSync('./public/uploads/'+req.user.id);
-        }
+    // Creates user id directory for upload if not exist
+    if(!fs.existsSync('./public/uploads/'+req.user.id)){
+        fs.mkdirSync('./public/uploads/'+req.user.id);
+    }
 
-        
-        upload(req, res, (err) =>{
-            if(err) {
+    
+    upload(req, res, (err) =>{
+        if(err) {
+            res.json({file: '/img/no-image.jpg', err: err});
+        } else{
+            if(req.file===undefined) {
                 res.json({file: '/img/no-image.jpg', err: err});
             } else{
-                if(req.file===undefined) {
-                    res.json({file: '/img/no-image.jpg', err: err});
-                } else{
-                    res.json({file: `/uploads/${req.user.id}/${req.file.filename}`});
-                }
+                res.json({file: `/uploads/${req.user.id}/${req.file.filename}`});
             }
-        });
+        }
+    });
 });
+
 
 function isLoggedIn(req, res, next) {
 	if(req.isAuthenticated()){
