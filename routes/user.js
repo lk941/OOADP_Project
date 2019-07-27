@@ -131,7 +131,11 @@ router.post('/login', (req, res, next) => {
     });
 
 function sendEmail(userId, email, token){ 
+<<<<<<< HEAD
     sgMail.setApiKey('<PUT YOUR API KEY HERE>'); 
+=======
+    sgMail.setApiKey('<SET YOUR SENDGRID API KEY HERE>'); 
+>>>>>>> master
     const message = {
         to: email,
         from: 'Do Not Reply <admin@likey.sg>',
