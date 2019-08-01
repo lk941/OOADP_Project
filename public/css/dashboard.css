@@ -133,7 +133,6 @@ html, body {
 }
 #content #profile .profile_header li:first-child {
   padding-left: 0;
-  border-right: 2px solid #e8ecec;
 }
 #content #profile .profile_header li .stats {
   color: #333;
@@ -213,7 +212,7 @@ html, body {
 }
 #content #profile_content nav .nav_arrows {
   display: inline-block;
-  float: right;
+  /* float: right; */
   width: 5vw;
   text-align: right;
   margin-right: 1em;
@@ -480,7 +479,7 @@ html, body {
 
 .product-card #product_price {
   display: inline-block;
-  float: right;
+  /* float: right; */
   margin-left: 20px;
   margin-top: 2.5rem;
   font-size: 1.15rem;

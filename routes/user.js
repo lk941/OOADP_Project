@@ -131,11 +131,7 @@ router.post('/login', (req, res, next) => {
     });
 
 function sendEmail(userId, email, token){ 
-<<<<<<< HEAD
-    sgMail.setApiKey('<PUT YOUR API KEY HERE>'); 
-=======
-    sgMail.setApiKey('<SET YOUR SENDGRID API KEY HERE>'); 
->>>>>>> master
+    sgMail.setApiKey('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'); 
     const message = {
         to: email,
         from: 'Do Not Reply <admin@likey.sg>',
@@ -188,7 +184,6 @@ router.get('/verify/:userId/:token', (req, res, next) => {
     })
 });
 
-// ----------- GOOGLE+ LOGIN AS OF MARCH 2019 HAS BEEN DISCONTINUED ----------- //
 // auth with google
 router.get('/google', passport.authenticate('google', {
     scope: ['profile', 'email']
@@ -200,10 +195,6 @@ router.get('/google/callback', passport.authenticate('google',  {
     successRedirect: '/',
     //res.redirect('/login');
 }));
-
-
-// ----------- GOOGLE+ LOGIN AS OF MARCH 2019 HAS BEEN DISCONTINUED ----------- //
-
 
 router.get('/facebook', passport.authenticate('facebook', {
     scope: ['email']

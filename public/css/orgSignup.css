@@ -279,3 +279,18 @@ input[type="radio"]:checked + label {
   }
 }
 
+input.action-button:disabled {
+  background-color: darkgrey !important;
+}
+
+input.action-button:disabled:hover {
+  box-shadow: none !important;
+}
+
+button.action-button:disabled {
+  background-color: darkgrey !important;
+}
+
+button.action-button:disabled:hover {
+  box-shadow: none !important;
+}

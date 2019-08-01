@@ -2,9 +2,6 @@ const Sequelize = require('sequelize');
 const db = require('../config/DBConfig');
 
 const Order = db.define('order', {
-    user_id: {
-        type: Sequelize.INTEGER
-    },
     boughtDate: {
         type: Sequelize.DATE
     },
@@ -14,17 +11,18 @@ const Order = db.define('order', {
     destination: {
         type: Sequelize.STRING
     },
-    product_id: {
-        type: Sequelize.INTEGER
-    },
     quantity: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
     },
     status: {
         type: Sequelize.STRING
     },
     location: {
         type: Sequelize.STRING
+    },
+    remarks: {
+        type: Sequelize.STRING(2000)
     },
 });
 

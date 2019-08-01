@@ -17,30 +17,57 @@
           <a class="action" href="/showEditProfile/{{user.id}}" style="position: absolute;">Edit Profile</a>
           <div class="profile_header">
             <img src="{{user.photoURL}}" alt="profile_picture" />
-            <h2>{{user.name}}</h2>
             {{#if user.is_org}}
+            <h2>{{user.org_name}}</h2>
               <p>Organization</p>
             {{else}}
+              <h2>{{user.name}}</h2>
               <p>{{checkUserType user.user_type}}</p>
             {{/if}}
-            {{#if user.is_org}}
-              <ul style="list-style: none;">
+              <ul style="list-style: none; padding-left: 3.5%;">
                 <li>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star star-disabled"></i>
-                </li>
-                <li>
-                  <p class="stats"><i class="fa fa-fire"></i> 128</p>
+                  <p>Wallet: <i style="color:#85bb65;" class="fas fa-money-bill-alt"></i> ${{user.wallet}}</p>
                 </li>
               </ul>
-            {{/if}}
           </div>
           <div class="divider"></div>
-          
-          <div class="profile_information">
+        
+          {{#if user.is_org}}
+            <div class="profile_custom">
+              <h3 style="margin-top: 5px;">Organization Information</h3>
+              <ul>
+                <li>
+                  <h4>Organization Name:</h4>
+                  <p>{{user.org_name}}</p>
+                </li>
+                <li>
+                  <h4>Website:</h4>
+                  <p>{{user.org_website}}</p>
+                </li>
+                <li>
+                  <h4>Organization Phone Number:</h4>
+                  <p>{{user.org_phone}}</p>
+                </li>
+                <li>
+                  <h4>Organization Location:</h4>
+                  <p>{{user.country}} {{user.address}} {{user.unitNo}} {{user.postalCode}}</p>
+                </li>
+                <li>
+                  <h4>Organization Size:</h4>
+                  {{#ifEqual user.org_size "individual"}}
+                    <p>Individual</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "sme"}}
+                    <p>Small Medium Enterprise</p>
+                  {{/ifEqual}}
+                  {{#ifEqual user.org_size "mnc"}}
+                    <p>Multinational Corporation</p>
+                  {{/ifEqual}}
+                </li>
+              </ul>
+            </div>
+        {{else}}
+        <div class="profile_information">
             <h3 style="margin-top: 5px;" >Personal Information</h3>
             <ul style="list-style: none;">
               <li>
@@ -67,40 +94,6 @@
           </div>
           
           <div class="divider"></div>
-          {{#if user.is_org}}
-            <div class="profile_custom">
-              <h3 style="margin-top: 5px;">Organization Information</h3>
-              <ul>
-                <li>
-                  <h4>Organization Name:</h4>
-                  <p>{{user.org_name}}</p>
-                </li>
-                <li>
-                  <h4>Website:</h4>
-                  <p>{{user.org_website}}</p>
-                </li>
-                <li>
-                  <h4>Organization Phone Number:</h4>
-                  <p>{{user.org_phone}}</p>
-                </li>
-                <li>
-                  <h4>Organization Location:</h4>
-                  <p>{{user.org_location}}</p>
-                </li>
-                <li>
-                  <h4>Organization Size:</h4>
-                  {{#ifEqual user.org_size "individual"}}
-                    <p>Individual</p>
-                  {{/ifEqual}}
-                  {{#ifEqual user.org_size "sme"}}
-                    <p>Small Medium Enterprise</p>
-                  {{/ifEqual}}
-                  {{#ifEqual user.org_size "mnc"}}
-                    <p>Multinational Corporation</p>
-                  {{/ifEqual}}
-                </li>
-              </ul>
-            </div>
         {{/if}}
         </div>
         <div id="profile_content" class="col s8">
@@ -116,11 +109,11 @@
                   Service
                 </a>
               </li>
-              <li class="tab">
+              {{!-- <li class="tab">
                 <a href="/showDashboardWishlist" class="">
                   Wishlist
                 </a>
-              </li>
+              </li> --}}
               <li class="tab">
                 <a href="/showDashboardWallet">
                   Wallet
@@ -133,7 +126,7 @@
             
           </nav>
           
-          <div class="profile-content">
+          <div class="profile-content" style="min-height: 93.75%;">
           {{#if product}}
             {{#each product}}
               <div class="row">
@@ -177,7 +170,7 @@
                         <div id='progress{{id}}' class="progress dark" style="padding-left:20%;">
                         <div class="left" style="width: 75%;">
                           <div class="1id{{id}}">{{origin}}</div>
-                          <div class="2id{{id}}">{{destination}}</div>
+                          <div class="2id{{id}}">{{location}}</div>
                           <div class="3id{{id}}">{{destination}}</div>
                         </div>
                         <div class="right">
@@ -198,7 +191,7 @@
             {{/each}}
             {{else}}
             <div class="row" style="text-align: center; font-size:60px;">
-              <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top:25%;">
                 <i class="fas fa-store"></i>
                 <p style="font-size:20px;">Order something!</p>
               </div>

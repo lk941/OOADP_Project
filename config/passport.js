@@ -5,6 +5,8 @@ const keys = require('./keys');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 // Load user model 
 const User = require('../models/User');
@@ -63,9 +65,14 @@ function localStrategy(passport) {
       },(accessToken, refreshToken, profile, done) => {
             process.nextTick(() => {
                 console.log(profile);
-                User.findOne( { where: {user_type: 'Member_facebook' + profile.id} } )
+                User.findOne( { where: {
+                    // user_type: 'Member_facebook' + profile.id,
+                    // [Op.or]: [{email: profile.emails[0].value}] 
+                    email: profile.emails[0].value
+                } } )
                 .then((user) => {
                     if(!user) {
+                        
                         console.log("======= User not found, new user will be created =======");
                         User.create({ 
                             name: profile.displayName,
@@ -97,7 +104,11 @@ function localStrategy(passport) {
     }, function(token, tokenSecret, profile, callback) {
         process.nextTick(() => {
             console.log(profile);
-            User.findOne( { where: {user_type: 'Member_twitter' + profile.id} } )
+            User.findOne( { 
+                where: {
+                    user_type: 'Member_twitter' + profile.id
+                } 
+            } )
             .then((user) => {
                 if(!user) {
                     console.log("======= User not found, new user will be created =======");
@@ -134,7 +145,13 @@ function localStrategy(passport) {
         }, (accessToken, refreshToken, profile, done) => {
             process.nextTick(() => {
                 // passport callback function
-                User.findOne({ where: {user_type: 'Member_google' + profile.id} }).then((user) => {
+                User.findOne({
+                     where: {
+                        //  user_type: 'Member_google' + profile.id,
+                        //  [Op.or]: [{email: profile.emails[0].value}] 
+                        email: profile.emails[0].value
+                        }
+                     }).then((user) => {
                     if (user){
                         // already have the user
                         console.log('user is: ', user);

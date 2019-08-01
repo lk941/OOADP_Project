@@ -1,7 +1,3 @@
-/*
- * 'require' is similar to import used in Java and Python. It brings in the libraries required to be used
- * in this JS file.
- * */
 const fs = require('fs')
 const https = require('https')
 const express = require('express');
@@ -13,29 +9,21 @@ const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 const FlashMessenger = require('flash-messenger');
 const MapboxClient = require('mapbox');
-// Library to use MySQL to store session objects
 const MySQLStore = require('express-mysql-session');
-const db = require('./config/db'); // db.js config file
+const db = require('./config/db');
 const passport = require('passport');
 const methodOverride = require('method-override');
 const keys = require('./config/keys');
 
 //Bring in database connection
-const vidjotDB = require('./config/DBConnection');
+const likeyDB = require('./config/DBConnection');
 // Connects to MySQL databse
-vidjotDB.setUpDB(false); // To set up database with new tables set (true)
+likeyDB.setUpDB(false);
 
 // Passport Config
 const authenticate = require('./config/passport');
 authenticate.localStrategy(passport);
 
-//const fauthenticate = require('./config/fpassport');
-//fauthenticate.facebookStrategy(passport);
-
-/*
- * Loads routes file main.js in routes directory. The main.js determines which function
- * will be called based on the HTTP request and URL.
- */
 const mainRoute = require('./routes/main');
 const userRoute = require('./routes/user');
 const videoRoute = require('./routes/video');
@@ -48,23 +36,8 @@ const {checkUserType} = require('./helpers/hbs');
 const {ifEqual} = require('./helpers/hbs');
 const {ifEqualModal} = require('./helpers/hbs');
 
-/*
- * Creates an Express server - Express is a web application framework for creating web applications
- * in Node JS.
- */
 const app = express();
-//var router = express.Router();
 
-// Handlebars Middleware
-/*
- * 1. Handlebars is a front-end web templating engine that helps to create dynamic web pages using variables
- * from Node JS.
- *
- * 2. Node JS will look at Handlebars files under the views directory
- *
- * 3. 'defaultLayout' specifies the main.handlebars file under views/layouts as the main template
- *
- * */
 app.engine('handlebars', exphbs({
 	helpers: {
 		formatDate:formatDate,	
@@ -74,7 +47,7 @@ app.engine('handlebars', exphbs({
 		ifEqualModal
 	},
 
-	defaultLayout: 'main' // Specify default template views/layout/main.handlebar 
+	defaultLayout: 'main' 
 }));
 app.set('view engine', 'handlebars');
 
@@ -108,9 +81,7 @@ app.use(session({
 		password: db.password,
 		database: db.database,
 		clearExpired: true,
-		// How frequently expired sessions will be cleared; milliseconds:
 		checkExpirationInterval: 900000,
-		// The maximum age of a valid session; milliseconds:
 		expiration: 900000,
 	}),
 	resave: false,
@@ -141,13 +112,7 @@ app.use(function (req, res, next) {
 // Method override middleware to use other HTTP methods such as PUT and DELETE
 app.use(methodOverride('_method'));
 
-// Use Routes
-/*
- * Defines that any root URL with '/' that Node JS receives request from, for eg. http://localhost:5000/, will be handled by
- * mainRoute which was defined earlier to point to routes/main.js
- * */
-app.use('/', mainRoute); // mainRoute is declared to point to routes/main.js
-// This route maps the root URL to any path defined in main.js
+app.use('/', mainRoute); 
 app.use('/video', videoRoute)
 app.use('/user', userRoute)
 
@@ -156,18 +121,7 @@ const httpsOptions = {
 	key: fs.readFileSync(path.join(__dirname, 'ssl', 'server.key'))
 }
 
-/*
- * Creates a unknown port 5000 for express server since we don't want our app to clash with well known
- * ports such as 80 or 8080.
- * */
 const port = 5000;
-
-// Starts the server and listen to port 5000
-/*
-app.listen(port, () => {
-	console.log(`Server started on port ${port}`);
-});
-*/
 
 https.createServer(httpsOptions, app)
 	.listen(port, () => {

@@ -5,9 +5,117 @@
   <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/manageOrder.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  {{!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> --}}
+  <style>
+    .form__wrapper {
+  color:#ff6600;
+  background-color: #E3E2DF;
+  padding: 40px 40px 58px;
+  margin: 100px auto 95px;
+  box-shadow: 0 19px 38px rgba(0,0,0,0.3), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.form__btns {
+  text-align: center;
+}
+
+.form__btns button {
+  min-width: 95px;
+  margin: 24px 15px 0;
+}
+
+.form-control {
+  color: black;
+  background-color: #E3E2DF;
+  border-radius: 0;
+}
+
+textarea.form-control {
+  height: 39px;
+}
+
+.form__comments label:not(:first-child){
+  margin-top: 32px;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+/* Footer*/
+footer {
+  color: #E3E2DF;
+  opacity: 0.8;
+}
+
+footer a {
+  color: #5D001E;
+}
+
+footer a:hover {
+  color: #5D001E;
+  text-decoration: underline;
+}
+
+.text-small {
+  font-size: .8rem;
+}
+
+/* Responsive */
+@media (min-width: 576px) { 
+
+  .form__btns button {
+    min-width: 125px;
+    margin: 24px 20px 0;
+  }
+  
+}
+
+#editBttn {
+  color: black;
+  border-color: #5D001E;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+#editBttns:hover {
+  background-color: #ff6600;
+  color:#E3E2DF;
+  border-color: #ff6600;
+}
+
+.editInputField:focus {
+  box-shadow: 0 0 5px black !important;
+  background-color: #E3E2DF;
+  color: black;
+  border-color: black;
+}
+
+.layout {
+  font-weight: lighter;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select2-results__option {
+  color: #555;
+}
+
+.flag-text {
+  margin-left: 10px;
+}
+
+.theModal {
+  text-align:center;
+  margin: 0 auto;
+}
+</style>
 </head>
 
 <body>
@@ -21,13 +129,13 @@
       <div class="order_tab">
         <ul class="tabs">
           <li class="tab-link current" data-tab="order_tab">All</li>
-          <li class="tab-link" data-tab="buy_again">Pending</li>
+          {{!-- <li class="tab-link" data-tab="buy_again">Pending</li>
           <li class="tab-link" data-tab="open_orders">Delivering</li>
-          <li class="tab-link" data-tab="cancelled_orders">Cancelled</li>
+          <li class="tab-link" data-tab="cancelled_orders">Cancelled</li> --}}
         </ul>
       </div>
     </div>
-    <div id="order_tab" class="orderCardWrap tab-content1 current" style="margin-bottom: 1.5%;">
+    {{!-- <div id="order_tab" class="orderCardWrap tab-content1 current" style="margin-bottom: 1.5%;">
       <div class="orderCard">
         <div class="orderHead">
           <ul class="orderLeft">
@@ -73,52 +181,88 @@
           <button id="rej_order" class="gift_btn">Cancel Order</button>
         </div>
       </div>
-    </div>
-  </div>
-  <div id="buy_again" class="orderCardWrap tab-content1">
-    Lorem2
-  </div>
-  <div id="open_orders" class="orderCardWrap tab-content1">
-    Lorem1
-  </div>
-  <div id="cancelled_orders" class="orderCardWrap tab-content1">
-    <div class="orderCard">
-      <div class="orderHead">
-        <ul class="orderLeft">
-          <li>
-            <p>ORDER PLACED <span>12 March 2019</span></p>
-          </li>
-          <li>
-            <p>TOTAL <span>$413.00</span></p>
-          </li>
-          <li>
-            <p>SHIP TO <span class="customerName">Customer Name</span>
-              <span class="cstmrInfo">
-                          <strong>Customer Name</strong> Lorem Ipsum is simply dummy text
-                        </span>
-            </p>
-          </li>
-        </ul>
-        <div class="invoiceDetails">
-          <p>ORDER # 171-8448362-6456308</p>
+    </div> --}}
+    {{#each order}}
+      <div id="order_tab" class="orderCardWrap tab-content1 current" style="margin-bottom: 1.5%;">
+      <div class="orderCard">
+        <div class="orderHead">
+          <ul class="orderLeft">
+            <li>
+              <p>ORDER PLACED <span>{{formatDate boughtDate "DD MMMM YYYY"}}</span></p>
+            </li>
+            <li>
+              <p>TOTAL <span>${{cost}}</span></p>
+            </li>
+            <li>
+              <p>{{#ifEqual type "Goods"}}Current {{else}}Service {{/ifEqual}}<span class="customerName">LOCATION</span>
+                <span class="cstmrInfo">
+                  <strong>LOCATION</strong> {{location}}
+                </span>
+              </p>
+
+            </li>
+          </ul>
+          <div class="invoiceDetails">
+            <p style="margin-bottom:0;">ORDER #{{id}}</p><p >Order Type: {{type}}</a>
+          </div>
         </div>
       </div>
-      <div class="itemDetails">
-        <h3>Delivered 16-Mar-2019</h3>
-        <p>Package was handed to a receptionist</p>
-        <p>Signed by: Priti.</p>
+      <div style="border: 1px solid #ccc;"  class="itemDetails">
+        <h3>{{status}}</h3>
+        <p>{{#ifEqual type "Goods"}}To:{{/ifEqual}} {{destination}}</p>        
         <div class="itemInfo">
           <div class="itemImg">
-            <img src="images/product1.jpg" alt="">
+            <img style="margin-top:11%;" src="{{images}}" alt="">
           </div>
-          <div class="itemDesc">
-            <h4>Pigeon Stainless Steel Swig Water Bottle 750ml (Set of 2)</h4>
-            <p>Sold by: <span>E-Emporium</span></p>
-            <span class="itemPrice">$0.00</span>
+          <div style="margin-left:7px; margin-top:1%;"  class="itemDesc">
+            <h4>{{product_name}}</h4>
+            <p>Remarks: <span>{{remarks}}</span></p>
+            
+            <p style="display:{{qty}};">Quantity: {{quantity}}</p>
+            <span style="display:{{qty}};" class="itemPrice">Price: ${{product_price}}</span>
+
+            <p style="color:red;">Total: ${{cost}}</p>
           </div>
+        </div>
+        <div class="btn_group">
+          <a class="Ebttns" href="/editOrder/{{id}}"><button class="buy_again" {{delivered}} {{completed}} {{cancelled}}>Edit Order</button></a>
+          {{!-- <button class="gift_btn">Contact User</button> --}}
+          <button data-toggle="modal" data-target="#popUpWindow{{id}}" id="rej_order" class="gift_btn" {{delivered}} {{completed}} {{cancelled}}>Cancel Order</button>
         </div>
       </div>
     </div>
+    <div class="container">
+        <div class="modal fade" id="popUpWindow{{id}}">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- header -->
+              <div class="modal-header" style="display: block;">
+                <h3 class="modal-title" style="color:#ff6600 display: inline-block; float:left; font-size:15px;">Cancel Order Confirmation</h3>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <!-- body -->
+              <div class="modal-header" style="display: block;">
+                  <div style="font-size:20px; width:100%; color:#ff6600" class="theModal form-group">
+                    Cancel Order #{{id}} for: {{product_name}} <br>
+                    <span style="font-size:18px;color:black;" id="SstatusChange">Are you sure you want to cancel?</span>
+                    <br>
+                    <span style="font-size:18px; color:black;" id="SstatusChange2">There is no way back.</span>
+
+
+                  </div>
+                  <form method="POST" action="/cancelOrder/{{id}}">
+                    <div class="form-group">
+                      <button style="margin-top: 5%; margin-left: 42.5%;" type='submit' class="theModal btn btn-primary">Update</button>
+                    </div>
+                  </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    {{/each}}
   </div>
   </div>
   </div>
@@ -126,13 +270,13 @@
 
 <script>
 jQuery(".order_tab ul.tabs li").click(function() {
-    var tab_id = jQuery(this).attr("data-tab");
+  var tab_id = jQuery(this).attr("data-tab");
 
-    jQuery(".order_tab ul.tabs li").removeClass("current");
-    jQuery(".tab-content1").removeClass("current");
+  jQuery(".order_tab ul.tabs li").removeClass("current");
+  jQuery(".tab-content1").removeClass("current");
 
-    jQuery(this).addClass("current");
-    jQuery("#" + tab_id).addClass("current");
+  jQuery(this).addClass("current");
+  jQuery("#" + tab_id).addClass("current");
 });
 
 </script>

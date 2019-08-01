@@ -11,15 +11,12 @@ const setUpDB = (drop) => {
         console.log('Database connected');
     })
     .then(() => {
-        /* 
-            Defines the relationship where a user has many videos.
-            In this case the primary key from user will be a foreign key
-            in video.
-        */
        order.belongsTo(user);
        order.belongsTo(product);
        user.hasMany(order);
+       user.hasMany(product);
        product.hasMany(order);
+       product.belongsTo(user);
 
        mySQLDB.sync({ // Creates table if none exists
            force: drop

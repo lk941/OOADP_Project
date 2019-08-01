@@ -75,10 +75,22 @@ const User = db.define('user', {
     org_website: {
         type: Sequelize.STRING
     },
+    org_address: {
+        type: Sequelize.STRING
+    },
+    org_country: {
+        type: Sequelize.STRING
+    },
+    org_unitNo: {
+        type: Sequelize.STRING
+    },
+    org_postalCode: {
+        type: Sequelize.STRING
+    },
     is_org: {
         type: Sequelize.BOOLEAN
     },
-    products: {
+    org_products: {
         type: Sequelize.STRING
     },
     wallet: {
