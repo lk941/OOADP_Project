@@ -200,7 +200,7 @@ router.get('/success', (req, res) => {
   });
   });
   
-  router.get('/cancel', (req, res) => res.redirect('/showDashboardWallet'));
+router.get('/cancel', (req, res) => res.redirect('/showDashboardWallet'));
   
   
 
@@ -807,11 +807,29 @@ router.get("/manageOrder", isOrg, (req, res) => {
 						the_order.cancelled = "";
 						the_order.cancelledA = "block";
 					}
-
+					
 					ret_order.push(the_order);
 				}
 			})
 		})).then(() => {
+
+			// Reverse Insertion - highest to lowest
+			let insertionSort = (inputArr) => {
+				let length = inputArr.length;
+				for (let i = 1; i < length; i++) {
+					let key = inputArr[i];
+					let j = i - 1;
+					while (j >= 0 && inputArr[j].id < key.id) {
+						inputArr[j + 1] = inputArr[j];
+						j = j - 1;
+					}
+					inputArr[j + 1] = key;
+				}
+				return inputArr;
+			};
+
+			insertionSort(ret_order);
+
 			res.render('user/manageOrder', {
 				order: ret_order,
 			})
