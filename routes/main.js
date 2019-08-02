@@ -10,15 +10,15 @@ const MapboxClient = require('mapbox');
 const client = new MapboxClient('pk.eyJ1IjoiY2Vld2FpIiwiYSI6ImNqbng3eDcyZDByeXgzcHBnY2w0cGloM2sifQ.NsvAT34SplBxuUvZsvUSKA');
 const dialcodes = require('dialcodes');  // npm i dialcodes
 // const SendOtp = require('sendotp'); // npm install sendotp --save
-// const sendOtp = new SendOtp('2926AawNJ9tkj5d3bde76');
+// const sendOtp = new SendOtp('<ADD YOUR sentOtp API KEY here>');
 const Nexmo = require('nexmo'); //npm install --save nexmo express body-parser ejs
 // const nexmo = new Nexmo({ // old api key
-//   apiKey: '07ec6777',
-//   apiSecret: 'aCkARCcv0Hm18Ox5'
+//   apiKey: '<APIKEY>',
+//   apiSecret: '<APISECRET>'
 // });
 const nexmo = new Nexmo({ // 2nd api key
-  apiKey: '267bcd28',
-  apiSecret: 'jmEutZQWQGJfNv70',
+  apiKey: '<APIKEY>',
+  apiSecret: '<APISECRET>',
 });
 
 // const from = 'Nexmo';
