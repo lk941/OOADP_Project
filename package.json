@@ -40,7 +40,7 @@
     "passport-twitter": "^1.0.4",
     "paypal-rest-sdk": "^1.8.1",
     "sendotp": "^1.2.9",
-    "sequelize": "^5.8.7",
+    "sequelize": "^5.15.1",
     "speakeasy": "^2.0.0"
   }
 }
